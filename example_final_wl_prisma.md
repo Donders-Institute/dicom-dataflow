@@ -1,9 +1,9 @@
 The following example is the minimum worklist fields for PRISMA scanner:
 
 ```
-(0010,0010) PN  [3010000.01_SUBJ0100]
-(0010,0020) LO  [3010000.01_SUBJ0100]
-(0020,000d) UI  [12349]                      # Study Instance ID, should be a number and unique per day
+(0010,0010) PN  [3010000.01_SUBJ0100]             # Patient Name: This is the mandatory field
+(0010,0020) LO  [3010000.01_SUBJ0100]             # Patient ID (combination of project id and subject id)
+(0020,000d) UI  [12349]                           # Study Instance ID, should be a number and unique (system generated)
 (0032,1032) PN  [MARCEL ZWIERS]                   # RequestedPhysician (the one who book the lab)
 (0032,1060) LO  [The title of project 3010000.01] # RequestedProcedureDescription
 (0040,1001) SH  [SESS01]                          # RequestedProcedureID, this is mapped to StudyID in DICOM header, and the Study of DICOM is what DCCN researcher calls "session"
@@ -22,3 +22,5 @@ The following example is the minimum worklist fields for PRISMA scanner:
 (fffe,e00d) -
 (fffe,e0dd) -
 ```
+
+The archive tarball retrieved from Orthanc will be named as `<PatientID>_<StudyID>.tgz`; and that file should be transferred into `/project/<project_id>` where th `<project_id>` is extracted from the `<PatientID>`.
