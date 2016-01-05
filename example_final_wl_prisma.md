@@ -23,4 +23,8 @@ The following example is the minimum worklist fields for PRISMA scanner:
 (fffe,e0dd) -
 ```
 
+The resulting console screenshot is shown below:
+
+!(Prisma worklist console screenshot)[prisma_wl_console_screenshot.JPG]
+
 The archive tarball retrieved from Orthanc will be named as `<PatientID>_<StudyID>.tgz`; and that file should be transferred into `/project/<project_id>` where th `<project_id>` is extracted from the `<PatientID>`.
