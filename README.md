@@ -7,7 +7,7 @@ This package includes tools and scripts for running the DICOM worklist broker, b
 An init script built around the DCMTK `wlmscpfs` program is provided.  Do the following steps to include this script into system init.
 
 ```bash
-$ cp etc/wlserver /etc/init.d
+$ cp etc/init.d/wlserver /etc/init.d
 $ chkconfig --add wlserver
 ```
 
