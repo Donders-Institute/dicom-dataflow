@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# wlserver	This script will start and stop the DICOM worklist server
+#
+# chkconfig: 345 85 85
+# description: wlserver 
+#
+# Source the library functions
+. /etc/rc.d/init.d/functions
+
+PORT=1234
+WLDIR=/scratch/OrthancData/DicomWorklist
+LOGDIR=$WLDIR/logs
+
+# load dcmtk
+source /opt/_modules/setup.sh
+module load dcmtk
+
+# let see how we were called
+case "$1" in
+	start) 
+		echo -n "Starting DICOM worklist server: "
+		daemon "nohup wlmscpfs -v -dfp $WLDIR -dfr $PORT > $LOGDIR/wlserver.log 2>&1 &"
+		echo
+		;;
+	stop)
+		echo -n "Shutting down DICOM worklist server: "
+		killproc wlmscpfs
+		echo
+		;;
+	status)
+		status wlmscpfs
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	*)
+		echo "Usage: wlserver {start|stop|restart|status}"
+		exit 1
+esac
