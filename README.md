@@ -25,6 +25,12 @@ A workable DICOM worklist example is located within directory `example/WLBROKER`
 $ cp -R example/WLBROKER /scratch/OrthancData/DicomWorklist
 ```
 
+__Note__: remember to `touch` a lockfile within the `WLBROKER` directory so that the `wlmscpfs` recognises it's a directory in which the worklists are provided.  For example,
+
+```bash
+$ touch /scratch/OrthancData/DicomWorklist/WLBROKER/lockfile
+```
+
 Modify the `DA` and `TM` DICOM fields so a future timestamp, and the `AE` and `SH` fields to relevant MRI scanner in the `wklist1.dump` file and convert it into DICOM format:
 
 ```bash
