@@ -8,9 +8,11 @@
 # Source the library functions
 . /etc/rc.d/init.d/functions
 
-PORT=1234
-WLDIR=/scratch/OrthancData/DicomWorklist
-LOGDIR=$WLDIR/logs
+TCP_PORT=1234
+WLDIR=/scratch/data/OrthancData/DicomWorklist
+DICOM_MODALITY=WLBROKER
+MODALITY_DIR=${WLDIR}/${DICOM_MODALITY}
+LOG_DIR=$WLDIR/logs
 
 # load dcmtk
 source /opt/_modules/setup.sh
@@ -20,7 +22,14 @@ module load dcmtk
 case "$1" in
 	start) 
 		echo -n "Starting DICOM worklist server: "
-		daemon "nohup wlmscpfs -v -dfp $WLDIR -dfr $PORT > $LOGDIR/wlserver.log 2>&1 &"
+                if [ ! -d ${MODALITY_DIR} ]; then
+                    mkdir -p ${MODALITY_DIR}
+                    touch ${MODALITY_DIR}/lockfile
+                fi
+                if [ ! -d $LOG_DIR ]; then
+                    mkdir -p $LOG_DIR
+                fi
+		daemon "nohup wlmscpfs -v -dfp $WLDIR -dfr $TCP_PORT > $LOG_DIR/wlserver.log 2>&1 &"
 		echo
 		;;
 	stop)
