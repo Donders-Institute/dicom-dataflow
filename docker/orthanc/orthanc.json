@@ -32,7 +32,8 @@
   // into this instance of Orthanc
   "LuaScripts" : [
       "/var/lib/orthanc/scripts/accesscontrol.lua",
-      "/var/lib/orthanc/scripts/autorouting.lua"
+      "/var/lib/orthanc/scripts/autorouting.lua",
+      "/var/lib/orthanc/scripts/writeSeriesToProject.lua"
   ],
 
   // List of paths to the plugins that are to be loaded into this
