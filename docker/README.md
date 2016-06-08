@@ -3,5 +3,5 @@
 ## Usage
 
 ```bash
-$ docker-composer up
+$ docker-composer up [-d]
 ```
