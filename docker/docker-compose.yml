@@ -1,0 +1,12 @@
+version: "2"
+services:
+  dccn-orthanc:
+    build: ./orthanc
+    ports:
+      - "8042:8042"
+      - "4042:4042"
+    volumes:
+      - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
+      - /scratch/data/orthanc/db:/var/lib/orthanc/db
+      - ./orthanc/scripts:/var/lib/orthanc/scripts
+      - ./orthanc/plugins:/var/lib/orthanc/plugins
