@@ -6,29 +6,29 @@ function ToAscii(s)
 end
 
 function OnStableSeries(seriesId, tags, metadata)
-   print('This series is now stable, writing its instances on the disk: ' .. seriesId)
 
    local instances = ParseJson(RestApiGet('/series/' .. seriesId)) ['Instances']
    local patient = ParseJson(RestApiGet('/series/' .. seriesId .. '/patient')) ['MainDicomTags']
    local study = ParseJson(RestApiGet('/series/' .. seriesId .. '/study')) ['MainDicomTags']
    local series = ParseJson(RestApiGet('/series/' .. seriesId)) ['MainDicomTags']
+   -- parse PatientName to get project id
+   local t = {}
+   local j = 1
+   for pp in string.gmatch(patient['PatientID'], "([^_]+)") do
+       t[j] = pp
+       j = j + 1
+   end
+
+   print('Writing stable series ' .. seriesId .. ' to project: ' .. t[1])
+
+   -- compose path to path of the image instance
+   local path = TARGET .. '/' .. t[1] .. '/raw/mri/' ..
+                t[2] .. '/' ..
+                study['StudyID'] .. '/' ..
+                ToAscii(series['SeriesDescription'])
 
    for i, instance in pairs(instances) do
    
-      -- parse PatientName to get project id
-      local t = {}
-      local j = 1
-      for pp in string.gmatch(patient['PatientName'], "_") do
-          t[j] = pp
-          j = j + 1
-      end
-      
-      -- compose path to path of the image instance
-      local path = ToAscii(TARGET .. '/' .. t[1] .. '/raw/mri/' ..
-                           t[2] .. '/' ..
-                           study['StudyDescription'] .. '/' ..
-                           series['SeriesDescription'])
-
       -- Retrieve the DICOM file from Orthanc
       local dicom = RestApiGet('/instances/' .. instance .. '/file')
 

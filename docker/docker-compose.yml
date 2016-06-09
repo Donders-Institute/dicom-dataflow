@@ -10,3 +10,4 @@ services:
       - /scratch/data/orthanc/db:/var/lib/orthanc/db
       - ./orthanc/scripts:/var/lib/orthanc/scripts
       - ./orthanc/plugins:/var/lib/orthanc/plugins
+      - /project:/project
