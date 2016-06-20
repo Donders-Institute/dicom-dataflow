@@ -25,10 +25,12 @@ function OnStableSeries(seriesId, tags, metadata)
    local path = TARGET .. '/' .. t[1] .. '/raw/mri/' ..
                 t[2] .. '/' ..
                 study['StudyID'] .. '/' ..
-                ToAscii(series['SeriesDescription'])
+                string.format("%02d", series['SeriesNumber']) .. '_' .. ToAscii(series['SeriesDescription'])
 
    for i, instance in pairs(instances) do
    
+      local tags = ParseJson(RestApiGet('/instances/' .. instance)) ['MainDicomTags']
+
       -- Retrieve the DICOM file from Orthanc
       local dicom = RestApiGet('/instances/' .. instance .. '/file')
 
@@ -36,8 +38,11 @@ function OnStableSeries(seriesId, tags, metadata)
       -- http://stackoverflow.com/a/16029744/881731
       os.execute('mkdir -p "' .. path .. '"')
 
+      -- Compose absolute file name 
+      local fname = path .. '/' .. string.format("%05d", tags['InstanceNumber']) .. '_' .. tags['SOPInstanceUID'] .. '.IMA'
+
       -- Write to the file
-      local target = assert(io.open(path .. '/' .. instance .. '.dcm', 'wb'))
+      local target = assert(io.open(fname, 'wb'))
       target:write(dicom)
       target:close()
    end
