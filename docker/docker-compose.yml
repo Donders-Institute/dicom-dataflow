@@ -11,3 +11,9 @@ services:
       - ./orthanc/scripts:/var/lib/orthanc/scripts
       - ./orthanc/plugins:/var/lib/orthanc/plugins
       - /project:/project
+  dccn-wlbroker:
+    build: ./wlbroker
+    ports:
+      - "1234:1234"
+    volumes:
+      - /scratch/data/wlbroker:/data/wlbroker
