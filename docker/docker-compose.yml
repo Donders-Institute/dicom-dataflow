@@ -7,9 +7,10 @@ services:
       - "4042:4042"
     volumes:
       - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
-      - /scratch/data_dicom/orthanc/db:/var/lib/orthanc/db
       - ./orthanc/scripts:/var/lib/orthanc/scripts
       - ./orthanc/plugins:/var/lib/orthanc/plugins
+      - /scratch/data_dicom/orthanc/db:/var/lib/orthanc/db
+      - /scratch/data_dicom/orthanc/log:/var/lib/orthanc/log
       - /project:/project
   dccn-wlbroker:
     build: ./wlbroker
