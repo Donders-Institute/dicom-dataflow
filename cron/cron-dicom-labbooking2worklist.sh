@@ -9,7 +9,7 @@ cwd=$( get_script_dir $0 )
 
 export DCCN_PYTHONDIR=/opt/python/dccn
 
-WLBROKER_DIR=/scratch/data/wlbroker/WLBROKER
+WLBROKER_DIR=/scratch/data_dicom/wlbroker/WLBROKER
 
 today=$( date +%Y-%m-%d )
 #today=2016-06-01
