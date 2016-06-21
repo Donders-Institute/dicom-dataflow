@@ -3,14 +3,15 @@
 source /opt/_modules/setup.sh
 module load python
 module load cluster 
+module load dcmtk
 source $CLUSTER_UTIL_ROOT/share/cluster-lib.sh
 cwd=$( get_script_dir $0 )
 
-export DCCN_PYTHONDIR=/home/tg/honlee/projects/hpc-utility/python
+export DCCN_PYTHONDIR=/opt/python/dccn
 
-WLBROKER_DIR=/scratch/data/OrthancData/DicomWorklist/WLBROKER
+WLBROKER_DIR=/scratch/data/wlbroker/WLBROKER
 
 today=$( date +%Y-%m-%d )
-#today=2016-05-27
+#today=2016-06-01
 
 $DCCN_PYTHONDIR/bin/dicom-labbooking2worklist.py -c ${cwd}/cron-dicom-labbooking2worklist.ini -d $today -s $WLBROKER_DIR
