@@ -2,13 +2,13 @@
 
 This package contains:
 
-- [docker](http://docker.com) scripts to start the [Orthanc]() PACS server and a simple DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](). 
+- [docker](http://docker.com) scripts to start the [Orthanc](http://www.orthanc-server.com/) PACS server and a simple DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](http://dicom.offis.de). 
 - A cron job script to periodically converting the lab-booking events into DICOM worklist. 
 
 ## Requirements 
 
-1. [docker-engine]() and [docker-compose]()
-2. The DCCN's [hpc-utility package]()
+1. [docker-engine](https://www.docker.com/products/docker-engine) and [docker-compose](https://docs.docker.com/compose/)
+2. The DCCN's [hpc-utility package](https://github.com/Donders-Institute/hpc-utility). In the HPC cluster at DCCN, this package is available under the `/opt` directory.
 3. crontab
 
 ## Configure and run the services 
