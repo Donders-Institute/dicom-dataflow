@@ -1,51 +1,50 @@
 # DCCN DICOM dataflow
 
-This package includes tools and scripts for running the DICOM worklist broker, built around the [DCMTK toolkits](http://dicom.offis.de/dcmtk.php.en).
+This package contains:
 
-## Starting worklist broker
+- [docker](http://docker.com) scripts to start the [Orthanc]() PACS server and a simple DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](). 
+- A cron job script to periodically converting the lab-booking events into DICOM worklist. 
 
-An init script built around the DCMTK `wlmscpfs` program is provided.  Do the following steps to include this script into system init.
+## Requirements 
 
+1. [docker-engine]() and [docker-compose]()
+2. The DCCN's [hpc-utility package]()
+3. crontab
+
+## Configure and run the services 
+
+### 1. checkout this package from GitHub
+ 
 ```bash
-$ cp etc/init.d/wlserver /etc/init.d
-$ chkconfig --add wlserver
+$ git clone https://github.com/Donders-Institute/dccn-dicom-dataflow.git
 ```
 
-After that, one can manage the service via
+### 2. start docker containers for DICOM PACS and worklist servers
+
+The docker scripts are organised under the directory `docker`.  You may edit the file `docker-compose.yml` to adjust the data directory shared between containers and docker host. By default, data directories are organised under `/scratch/data_dicom/orthanc` and `/scratch/data_dicom/wlbroker` on the docker host.
+
+Build docker containers using the following command:
 
 ```bash
-$ service wlserver {start|stop|restart|status}
+$ docker-compose build 
 ```
 
-## Example worklists
-
-A workable DICOM worklist example is located within directory `example/WLBROKER`.  The directory `WLBROKER` should match the broker's DICOM modality name.  To make the  worklist example available, you need to copy the whole directory into the `$WLDIR` directory defined in `etc/wlserver` init script.  For example,
+Start docker containers using the following command:
 
 ```bash
-$ cp -R example/WLBROKER /scratch/OrthancData/DicomWorklist
+$ docker-compose up -d
 ```
 
-__Note__: remember to `touch` a lockfile within the `WLBROKER` directory so that the `wlmscpfs` recognises it's a directory in which the worklists are provided.  For example,
+If the services are started successfuly, the host should export three TCP ports.  They are `8042` for Orthanc web front-end, `4042` for Orthanc's DICOM interface, and `1234` for DICOM worklist service.
 
-```bash
-$ touch /scratch/OrthancData/DicomWorklist/WLBROKER/lockfile
+### 3. setup cron job for converting lab-booking events to worklist tasks
+
+The script can be put right in the `crontab` is `cron/cron-dicom-labbooking2worklist.sh`. Inside the script, one should adjust the `WLBROKER_DIR` variable to specify the directory on the docker host in which the worklist files are stored.By default, it is set to `/scratch/data_dicom/wlbroker/WLBROKER`.  
+
+In addition, the script uses `cron/cron-dicom-labbooking2worklist.ini` to setup connection to the project database of DCCN.
+
+After the configuration, create a entry in the `crontab -e` similar to the example below:
+
 ```
-
-Modify the `DA` and `TM` DICOM fields so a future timestamp, and the `AE` and `SH` fields to relevant MRI scanner in the `wklist1.dump` file and convert it into DICOM format:
-
-```bash
-$ source /opt/_modules/setup.sh
-$ module load dcmtk
-$ dump2dcm /scratch/OrthancData/DicomWorklist/WLBROKER/wklist1.dump /scratch/OrthancData/DicomWorklist/WLBROKER/wklist1.wl
+30 * * * * /bin/bash -l -c '/root/opt/dccn-dicom-dataflow/cron/cron-dicom-labbooking2worklist.sh >> /scratch/data_dicom/cron/dicom-labbooking2worklist.log 2>&1'
 ```
-
-## Test client query on example worklists
-
-Instead of testing with MRI console, one could also test with DCMTK's `findscu` by querying the examples worklists.  In the `example/client` directory a very generic query is prepared as file `wlistqry1.dump`.  Simply convert it to DICOM format and run the query via the `findscu` command:
-
-```bash
-$ dump2dcm example/client/wlistqry1.dump example/client/wlistqry1.dcm
-$ findscu --call WLBROKER localhost 1234 example/client/wlistqry1.dcm
-```
-
-On the screen, you should see the response with the worklists in return.
