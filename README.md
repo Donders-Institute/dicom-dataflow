@@ -17,6 +17,7 @@ This package contains:
  
 ```bash
 $ git clone https://github.com/Donders-Institute/dccn-dicom-dataflow.git
+$ cd dccn-dicom-dataflow
 ```
 
 ### 2. start docker containers for DICOM PACS and worklist servers
@@ -26,6 +27,7 @@ The docker scripts are organised under the directory `docker`.  You may edit the
 Build docker containers using the following command:
 
 ```bash
+$ cd docker
 $ docker-compose build 
 ```
 
