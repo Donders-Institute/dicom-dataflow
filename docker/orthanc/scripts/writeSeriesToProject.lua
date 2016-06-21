@@ -5,6 +5,21 @@ function ToAscii(s)
    return s:gsub('[^a-zA-Z0-9-/ ]', '_')
 end
 
+function DirExists(strFolderName)
+   -- what a creative way to check whether the directory exists, LUA sucks!!
+   local f = io.popen("if [ -d " .. strFolderName .. " ]; then echo 1; else echo 0; fi", 'r')
+   local o = f:read("*a")
+   f:close()
+
+   if string.match(o, '^1.-') then
+      print("directory " .. strFolderName .. " exists") 
+      return true
+   else
+      print("directory " .. strFolderName .. " does not exists")
+      return false
+   end
+end
+
 function OnStableSeries(seriesId, tags, metadata)
 
    local instances = ParseJson(RestApiGet('/series/' .. seriesId)) ['Instances']
@@ -19,31 +34,39 @@ function OnStableSeries(seriesId, tags, metadata)
        j = j + 1
    end
 
+   local projectDir = TARGET .. '/' .. t[1]
+
    print('Writing stable series ' .. seriesId .. ' to project: ' .. t[1])
 
-   -- compose path to path of the image instance
-   local path = TARGET .. '/' .. t[1] .. '/raw/mri/' ..
-                t[2] .. '/' ..
-                study['StudyID'] .. '/' ..
-                string.format("%02d", series['SeriesNumber']) .. '_' .. ToAscii(series['SeriesDescription'])
+   if DirExists(projectDir) then
 
-   for i, instance in pairs(instances) do
-   
-      local tags = ParseJson(RestApiGet('/instances/' .. instance)) ['MainDicomTags']
+      -- compose path to path of the image instance
+      local path = projectDir .. '/raw/mri/' ..
+                   t[2] .. '/' ..
+                   study['StudyID'] .. '/' ..
+                   string.format("%02d", series['SeriesNumber']) .. '_' .. ToAscii(series['SeriesDescription'])
+ 
+      for i, instance in pairs(instances) do
+      
+         local tags = ParseJson(RestApiGet('/instances/' .. instance)) ['MainDicomTags']
+ 
+         -- Retrieve the DICOM file from Orthanc
+         local dicom = RestApiGet('/instances/' .. instance .. '/file')
+ 
+         -- Create the subdirectory (CAUTION: For Linux demo only, this is insecure!)
+         -- http://stackoverflow.com/a/16029744/881731
+         os.execute('mkdir -p "' .. path .. '"')
+ 
+         -- Compose absolute file name 
+         local fname = path .. '/' .. string.format("%05d", tags['InstanceNumber']) .. '_' .. tags['SOPInstanceUID'] .. '.IMA'
+ 
+         -- Write to the file
+         local target = assert(io.open(fname, 'wb'))
+         target:write(dicom)
+         target:close()
+      end
 
-      -- Retrieve the DICOM file from Orthanc
-      local dicom = RestApiGet('/instances/' .. instance .. '/file')
-
-      -- Create the subdirectory (CAUTION: For Linux demo only, this is insecure!)
-      -- http://stackoverflow.com/a/16029744/881731
-      os.execute('mkdir -p "' .. path .. '"')
-
-      -- Compose absolute file name 
-      local fname = path .. '/' .. string.format("%05d", tags['InstanceNumber']) .. '_' .. tags['SOPInstanceUID'] .. '.IMA'
-
-      -- Write to the file
-      local target = assert(io.open(fname, 'wb'))
-      target:write(dicom)
-      target:close()
+   else
+       print('project directory ' .. projectDir .. ' not exist, skipped.')
    end
 end
