@@ -25,4 +25,4 @@ if [ ! -d ${LOG_DIR} ]; then
     mkdir -p ${LOG_DIR}
 fi
 
-wlmscpfs -v -dfp $WLDIR -dfr $TCP_PORT > $LOG_DIR/wlbroker.log
+wlmscpfs -v -dfp $WLDIR -dfr $TCP_PORT > $LOG_DIR/wlbroker.log 2>&1
