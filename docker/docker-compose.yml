@@ -7,7 +7,7 @@ services:
       - "4042:4042"
     volumes:
       - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
-      - /scratch/data/orthanc/db:/var/lib/orthanc/db
+      - /scratch/data_dicom/orthanc/db:/var/lib/orthanc/db
       - ./orthanc/scripts:/var/lib/orthanc/scripts
       - ./orthanc/plugins:/var/lib/orthanc/plugins
       - /project:/project
@@ -16,4 +16,4 @@ services:
     ports:
       - "1234:1234"
     volumes:
-      - /scratch/data/wlbroker:/data/wlbroker
+      - /scratch/data_dicom/wlbroker:/data/wlbroker
