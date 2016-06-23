@@ -7,9 +7,8 @@ This package contains:
 
 ## Requirements 
 
-1. [docker-engine](https://www.docker.com/products/docker-engine) and [docker-compose](https://docs.docker.com/compose/)
-2. The DCCN's [hpc-utility package](https://github.com/Donders-Institute/hpc-utility). In the HPC cluster at DCCN, this package is available under the `/opt` directory.
-3. crontab
+1. [docker-engine](https://www.docker.com/products/docker-engine)
+1. [docker-compose](https://docs.docker.com/compose/)
 
 ## Configure and run the services 
 
@@ -20,33 +19,37 @@ $ git clone https://github.com/Donders-Institute/dccn-dicom-dataflow.git
 $ cd dccn-dicom-dataflow
 ```
 
-### 2. start docker containers for DICOM PACS and worklist servers
+### 2. configure access to private GitHub repositories and the databases
 
-The docker scripts are organised under the directory `docker`.  You may edit the file `docker-compose.yml` to adjust the data directory shared between containers and docker host. By default, data directories are organised under `/scratch/data_dicom/orthanc` and `/scratch/data_dicom/wlbroker` on the docker host.
+The files to be configured properly are:
+
+- `docker/docker-compose.yml`
+
+  In the `docker/docker-compose.yml` file, adjust the data directory shared between containers and docker host. By default, data directories are organised under `/scratch/data_dicom/orthanc` and `/scratch/data_dicom/wlbroker` on the docker host.
+
+  In the `docker/docker-compose.yml` file, you should also change the github username and password in order to checkout the `hpc-utility` repository from GitHub.
+
+- `docker/cal2wl/config.ini`
+
+  In the file `docker/cal2wl/config.ini`, change the database settings accordingly in order to access the lab-booking events in the DCCN calendar system based on MySQL database.
+
+- `docker/cal2wl/cron/crontab`
+
+  In the file `docker/cal2wl/cron/crontab`, you may adjust how often the lab-booking events in calender are converted into DICOM worklist.
+
+### 3. start docker containers for DICOM PACS and worklist servers
 
 Build docker containers using the following command:
 
 ```bash
 $ cd docker
-$ docker-compose build 
+$ docker-compose build
 ```
 
-Start docker containers using the following command:
+Start up docker containers using the following command:
 
 ```bash
 $ docker-compose up -d
 ```
 
 If the services are started successfuly, the host should export three TCP ports.  They are `8042` for Orthanc web front-end, `4042` for Orthanc's DICOM interface, and `1234` for DICOM worklist service.
-
-### 3. setup cron job for converting lab-booking events to worklist tasks
-
-The script can be put right in the `crontab` is `cron/cron-dicom-labbooking2worklist.sh`. Inside the script, one should adjust the `WLBROKER_DIR` variable to specify the directory on the docker host in which the worklist files are stored.By default, it is set to `/scratch/data_dicom/wlbroker/WLBROKER`.  
-
-In addition, the script uses `cron/cron-dicom-labbooking2worklist.ini` to setup connection to the project database of DCCN.
-
-After the configuration, create a entry in the `crontab -e` similar to the example below:
-
-```
-30 * * * * /bin/bash -l -c '/root/opt/dccn-dicom-dataflow/cron/cron-dicom-labbooking2worklist.sh >> /scratch/data_dicom/cron/dicom-labbooking2worklist.log 2>&1'
-```

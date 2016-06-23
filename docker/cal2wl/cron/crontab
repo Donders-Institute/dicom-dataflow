@@ -1,0 +1,1 @@
+30 * * * * /cron/dicom-labbooking2worklist.sh

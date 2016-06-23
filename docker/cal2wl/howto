@@ -1,0 +1,1 @@
+docker run -v `pwd`/cron:/cron -v /scratch/data_dicom/wlbroker:/data/wlbroker --dns=131.174.44.33 dccn-cronie
