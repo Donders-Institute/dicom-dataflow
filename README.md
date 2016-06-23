@@ -1,5 +1,7 @@
 # DCCN DICOM dataflow
 
+_NOTE: this package has strong dependency on the DCCN research facility, such as the project-based storage and properly configured MRI scanners._
+
 This package contains:
 
 - [docker](http://docker.com) scripts to start the [Orthanc](http://www.orthanc-server.com/) PACS server and a simple DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](http://dicom.offis.de). 
