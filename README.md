@@ -27,7 +27,7 @@ The files to be configured properly are:
 
   In the `docker/docker-compose.yml` file, adjust the data directory shared between containers and docker host. By default, data directories are organised under `/scratch/data_dicom/orthanc` and `/scratch/data_dicom/wlbroker` on the docker host.
 
-  In the `docker/docker-compose.yml` file, you should also change the github username and password in order to checkout the `hpc-utility` repository from GitHub.
+  In the `docker/docker-compose.yml` file, you should also change the github username and password in order to checkout [the `hpc-utility` repository](https://github.com/Donders-Institute/hpc-utility) from GitHub.
 
 - `docker/cal2wl/config.ini`
 
