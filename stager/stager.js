@@ -62,12 +62,14 @@ if (cluster.isMaster) {
     });
 }
 
-// graceful shutdown
+// graceful queue shutdown
 function shutdown() {
-    queue.shutdown( 60000, function(err) {
-        console.log( 'Kue shutdown: ', err||'' );
-        process.exit( 0 );
-    });
+    if ( cluster.isMaster ) {
+        queue.shutdown( 60000, function(err) {
+            console.log( 'Kue shutdown: ', err||'' );
+            process.exit( 0 );
+        });
+    }
 }
 
 process.once( 'SIGTERM', function(sig) { shutdown(sig); } );
