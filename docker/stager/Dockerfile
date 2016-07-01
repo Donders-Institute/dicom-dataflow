@@ -14,10 +14,13 @@ WORKDIR /opt/stager
 COPY package.json package.json
 COPY *.js ./
 COPY bin/* ./bin/
-RUN ( $nodejs_prefix/bin/npm install redis ) 
-RUN ( $nodejs_prefix/bin/npm install kue ) 
+RUN ( $nodejs_prefix/bin/npm install redis )
+RUN ( $nodejs_prefix/bin/npm install kue )
+COPY start_stager.sh start_stager.sh
+RUN ( chmod +x start_stager.sh )
 
 # run a stager
 ENV NODEJS_PREFIX $nodejs_prefix
+VOLUME [ "/project", "/opt/stager/irods_otp" ]
 EXPOSE 3000
-CMD "$NODEJS_PREFIX/bin/node" "stager.js"
+CMD [ "/opt/stager/start_stager.sh" ]

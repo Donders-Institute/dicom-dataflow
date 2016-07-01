@@ -51,7 +51,7 @@ if (cluster.isMaster) {
              
                 // TODO: make the logic implementation as a plug-in
                 var cmd = stager_bindir + path.sep + 's-irsync.sh';
-                var cmd_args = [job.data.srcURL, job.data.dstURL];
+                var cmd_args = [ job.data.srcURL, job.data.dstURL ];
                 var cmd_opts = {
                 };
   

@@ -2,6 +2,9 @@ version: "2"
 services:
   redis:
     image: redis
+    command: redis-server --appendonly yes
+    volumes:
+      - /scratch/data_stager:/data
   dccn-dirdm-irodsclient:
     build:
       context: ./irodsclient
@@ -16,6 +19,7 @@ services:
       - "3000:3000"
     volumes:
       - /project:/project
+      - ./irods_otp:/opt/stager/irods_otp:ro
     depends_on:
       - dccn-dirdm-irodsclient
       - redis
