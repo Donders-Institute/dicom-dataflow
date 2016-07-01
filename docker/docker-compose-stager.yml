@@ -1,0 +1,21 @@
+version: "2"
+services:
+  redis:
+    image: redis
+  dccn-dirdm-irodsclient:
+    build:
+      context: ./irodsclient
+    image: dccn-dirdm-irodsclient
+  dccn-dirdm-stager:
+    build: ./stager
+    image: dccn-dirdm-stager
+    dns:
+      - 131.174.44.33
+      - 131.174.44.34
+    ports:
+      - "3000:3000"
+    volumes:
+      - /project:/project
+    depends_on:
+      - dccn-dirdm-irodsclient
+      - redis

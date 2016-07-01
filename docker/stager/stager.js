@@ -3,9 +3,12 @@ var cluster = require('cluster');
 var queue = kue.createQueue({
     redis: {
         port: 6379,
-        host: '0.0.0.0'
+        host: 'redis'
     }
 });
+var path = require('path');
+
+const stager_bindir = __dirname + path.sep + 'bin';
 
 queue.on( 'error', function(err) {
     if ( cluster.isMaster) { console.log('Oops... ', err); }
@@ -47,15 +50,15 @@ if (cluster.isMaster) {
                 console.log("staging data: " + job.data.srcURL + " -> " + job.data.dstURL);
              
                 // TODO: make the logic implementation as a plug-in
-                var cmd = 'irsync'
+                var cmd = stager_bindir + path.sep + 's-irsync.sh';
                 var cmd_args = [job.data.srcURL, job.data.dstURL];
                 var cmd_opts = {
                 };
+  
                 var execFile = require('child_process').execFile;
                 var child = execFile(cmd, cmd_args, cmd_opts, function(err, stdout, stderr) {
                     if (err) { throw new Error('irsync failure: ' + stderr); }
-                    //done(null, stdout);
-                    done();
+                    done(null, stdout);
                 });
             }
         });
