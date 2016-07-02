@@ -8,6 +8,7 @@ curl -H "Content-Type: application/json" -X POST -d \
 "{ \"type\": \"rdm\",
    \"data\": { \"srcURL\": \"${src}\",
                \"dstURL\": \"${dst}\",
+               \"timeout\": 600,
                \"title\": \"[${now}] push to ${dst}\"},
    \"options\": { \"attempts\": 3,
                   \"backoff\": { \"delay\": 60000, \"type\": \"fixed\" }}
