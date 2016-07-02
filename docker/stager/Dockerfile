@@ -16,6 +16,7 @@ COPY *.js ./
 COPY bin/* ./bin/
 RUN ( $nodejs_prefix/bin/npm install redis )
 RUN ( $nodejs_prefix/bin/npm install kue )
+RUN ( $nodejs_prefix/bin/npm install tree-kill )
 COPY start_stager.sh start_stager.sh
 RUN ( chmod +x start_stager.sh )
 

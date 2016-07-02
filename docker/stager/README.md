@@ -8,6 +8,7 @@
 ```bash
 $ npm install redis
 $ npm install kue
+$ npm install tree-kill 
 ```
 
 ## Start up service
