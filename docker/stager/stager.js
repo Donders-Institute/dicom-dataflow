@@ -3,7 +3,8 @@ var cluster = require('cluster');
 var queue = kue.createQueue({
     redis: {
         port: 6379,
-        host: 'redis'
+        //host: 'redis'
+        host: '0.0.0.0'
     }
 });
 var path = require('path');
@@ -55,11 +56,47 @@ if (cluster.isMaster) {
                 var cmd_opts = {
                 };
   
+                job.data.__stopped = false;
                 var execFile = require('child_process').execFile;
                 var child = execFile(cmd, cmd_args, cmd_opts, function(err, stdout, stderr) {
-                    if (err) { throw new Error('irsync failure: ' + stderr); }
+                    if (err) { throw new Error(stderr); }
+                    job.data.__stopped = true;
                     done(null, stdout);
                 });
+
+                child.on( "exit", function(code, signal) {
+                    job.data.__stopped = true;
+                    if ( signal != 'null' ) {
+                        throw new Error('job terminated by ' + signal);
+                    }
+                });
+
+                // determine job timeout 
+                var timeout;
+                if ( job.data.timeout === undefined || job.data.timeout <= 0 ) {
+                    // no timeout
+                    timeout = Number.MAX_SAFE_INTEGER;  
+                } else {
+                    timeout = job.data.timeout;
+                }
+
+                // initiate a monitor loop (timer) for heartbeat check on job status/progress
+                var t_beg = new Date().getTime() / 1000;
+                var timer = setInterval( function() {
+                    if ( ! job.data.__stopped ) {
+                        // job still running, timeout check
+                        if ( new Date().getTime()/1000 - t_beg > timeout ) {
+                            console.log( 'job ' + job.id + ' timout (> ' + timeout + 's)');
+                            child.stdin.pause();
+                            child.kill('SIGKILL');
+                        } else {
+                            // TODO: check irsync progress and report back to the job progress
+                        }
+                    } else {
+                        // stop the timer 
+                        clearInterval(timer);
+                    }
+                }, 1000 );
             }
         });
     });
