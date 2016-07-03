@@ -5,7 +5,9 @@
   "author": "Hurng-Chun Lee <h.lee@donders.ru.nl>",
   "main": "stager.js",
   "dependencies" : {
+    "config": "",
     "redis": "",
-    "kue": ""
+    "kue": "",
+    "tree-kill": ""
   }
 }
