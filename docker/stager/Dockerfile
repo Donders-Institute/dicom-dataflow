@@ -14,9 +14,12 @@ WORKDIR /opt/stager
 COPY package.json package.json
 COPY *.js ./
 COPY bin/* ./bin/
+COPY config/* ./config/
 RUN ( $nodejs_prefix/bin/npm install redis )
 RUN ( $nodejs_prefix/bin/npm install kue )
+RUN ( $nodejs_prefix/bin/npm install config )
 RUN ( $nodejs_prefix/bin/npm install tree-kill )
+RUN ( $nodejs_prefix/bin/npm install basic-auth-connect )
 COPY start_stager.sh start_stager.sh
 RUN ( chmod +x start_stager.sh )
 

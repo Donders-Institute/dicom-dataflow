@@ -6,6 +6,7 @@
 ## Installation
 
 ```bash
+$ npm install config
 $ npm install redis
 $ npm install kue
 $ npm install tree-kill 

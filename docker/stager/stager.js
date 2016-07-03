@@ -1,3 +1,4 @@
+var config = require('config');
 var kue = require('kue');
 var cluster = require('cluster'); 
 var kill = require('tree-kill');
@@ -48,8 +49,28 @@ queue.on( 'error', function(err) {
 
 if (cluster.isMaster) {
 
-    // restful UI interface
-    kue.app.listen(3000);
+    // set up basic authentication for RESTful APIs
+    var express = require('express');
+    var basicAuth = require('basic-auth-connect');
+    var app = express();
+
+    // simple authentication based on a user/password table in the config file
+    app.use( basicAuth( function(user, pass) {
+        var users = config.get('apiUsers');
+        try {
+            if ( users[ user ] == pass ) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (err) {
+            return false;
+        }
+    }));
+
+    // start service for RESTful APIs
+    app.use(kue.app);
+    app.listen(3000);
 
     // fork workers
     var nworkers = require('os').cpus().length - 1;
