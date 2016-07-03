@@ -10,31 +10,70 @@ var queue = kue.createQueue({
 });
 var path = require('path');
 
+var active_pids = {};
+
 const stager_bindir = __dirname + path.sep + 'bin';
 
 queue.on( 'error', function(err) {
-    if ( cluster.isMaster) { console.error('Oops... ', err); }
+    if ( cluster.isMaster) { 
+        console.error('Oops... ', err);
+    }
 }).on( 'job enqueue', function(id, type) {
-    if ( cluster.isMaster) { console.log('[' + new Date().toISOString() + '] job %d enqueued for %s', id, type); }
+    if ( cluster.isMaster) { 
+        console.log('[' + new Date().toISOString() + '] job %d enqueued for %s', id, type);
+    }
 }).on( 'job complete', function(id, result) {
-    if ( cluster.isMaster) { console.log('[' + new Date().toISOString() + '] job %d complete', id); }
+    if ( cluster.isMaster) {
+        console.log('[' + new Date().toISOString() + '] job %d complete', id);
+    }
 }).on( 'job failed attempt', function(id, err, nattempts) {
-    if ( cluster.isMaster) { console.log('[' + new Date().toISOString() + '] job %d failed, attempt %d', id, nattempts); }
+    if ( cluster.isMaster) {
+        console.log('[' + new Date().toISOString() + '] job %d failed, attempt %d', id, nattempts); 
+    }
 }).on( 'job failed' , function(id, err) {
-    if ( cluster.isMaster) { console.log('[' + new Date().toISOString() + '] job %d failed', id); }
+    if ( cluster.isMaster) {
+        console.log('[' + new Date().toISOString() + '] job %d failed', id);
+    }
+}).on( 'job remove', function(id, err) {
+    if ( cluster.isMaster) {
+        var pinfo = active_pids[id];
+        if ( ! (pinfo === undefined) ) {
+            // inform worker to kill the process
+            pinfo['worker'].send({'type': 'KILL', 'pid': pinfo['pid'], 'jid': id});
+        }
+        delete active_pids[id];
+        console.log('[' + new Date().toISOString() + '] job %d removed', id);
+    }
 });
 
 if (cluster.isMaster) {
+
     // restful UI interface
     kue.app.listen(3000);
 
     // fork workers
     var nworkers = require('os').cpus().length - 1;
     for (var i = 0; i < nworkers; i++) {
-        cluster.fork();
+        var w = cluster.fork();
+        w.on('message', function(msg) {
+            if ( msg['type'] == 'START' ) {
+                active_pids[msg['jid']] = {'worker': this, 'pid': msg['pid']};
+                console.log('[' + new Date().toISOString() + '] job %s run by worker %s:%s', msg['jid'], active_pids[msg['jid']]['worker'].id, active_pids[msg['jid']]['pid']);
+            } else {
+                delete active_pids[msg['jid']];
+            }
+        });
     }
 
 } else {
+
+    process.on('message', function(msg) {
+        if ( msg['type'] == 'KILL' ) {
+            kill(msg['pid'], 'SIGKILL', function(err) {
+                console.log( '[' + new Date().toISOString() + '] job ' + msg['jid'] + ' killed upon user removal');
+            });
+        }
+    });
 
     queue.process("rdm", function(job, done) {
 
@@ -59,13 +98,20 @@ if (cluster.isMaster) {
                 var job_stopped = false;
                 var execFile = require('child_process').execFile;
                 var child = execFile(cmd, cmd_args, cmd_opts, function(err, stdout, stderr) {
+                    // inform master the job has been stopped
+                    process.send({'type':'stop', 'jid': job.id});
                     if (err) { throw new Error(stderr); }
                     job_stopped = true;
                     done(null, stdout);
                 });
 
+                // inform master the job has been started
+                process.send({'type':'START', 'jid': job.id, 'pid': child.pid});
+
                 child.on( "exit", function(code, signal) {
                     job_stopped = true;
+                    // inform master the job has been stopped
+                    process.send({'type':'STOP', 'jid': job.id});
                     if ( signal != 'null' ) {
                         throw new Error('job terminated by ' + signal);
                     }
