@@ -10,12 +10,12 @@ The containers are distinguished into two service sets, naming the __dicomdf__ a
 
 This service set makes use of the containers organised in the following sub-directories:
 
-- `docker/base`
-- `docker/orthanc`
-- `docker/wlbroker`
-- `docker/cal2wl`
+- `docker/base`: basic container with pre-installed tools/libraries/packages/modules
+- `docker/orthanc`: the [Orthanc](http://www.orthanc-server.com) server
+- `docker/wlbroker`: the DICOM worklist broker
+- `docker/cal2wl`: the cron job converting calendar bookings to DICOM worklist
 
-These containers are orchestrated by the docker-compose file `docker/docker-compose-dicomdf.yml`.
+They are orchestrated by the docker-compose file `docker/docker-compose-dicomdf.yml`.
 
 ### 1. docker host requirements
 
@@ -62,14 +62,14 @@ If the services are started successfuly, the host should export three TCP ports.
 
 This service set makes use of the containers organised in the following sub-directories:
 
-- `docker/irodsclient`
-- `docker/stager`
+- `docker/irodsclient`: iRODS icommand client with proper setup for DI-RDM
+- `docker/stager`: the stager service written in [Node.js](http://nodejs.org), and built on top of the [Kue](http://automattic.github.io/kue/) task scheduler.
 
-These containers are orchestrated by the docker-compose file `docker/docker-compose-stager.yml`.
+They are orchestrated by the docker-compose file `docker/docker-compose-stager.yml`.
 
 ### 1. docker host requirements
 
-- directory `/scratch/data_stager`
+- sufficient space on `/scratch/data_stager` for persistent [Redis](http://redis.io) database (for Kue)
 - access to the project storage, i.e. the `/project` directory
 - accepting inbound connectivity via port: `3000`
 
