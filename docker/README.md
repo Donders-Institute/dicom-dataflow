@@ -19,7 +19,7 @@ They are orchestrated by the docker-compose file `docker/docker-compose-dicomdf.
 
 ### 1. docker host requirements
 
-- sufficient space on directory `/scratch/data_dicom`
+- sufficient space on directory `/scratch/data_dicom`, for Orthanc database and DICOM worklist.
 - access to the project storage, i.e. the `/project` directory
 - accepting inbound connectivity via ports: `8042`, `4042` and `1234`
 
