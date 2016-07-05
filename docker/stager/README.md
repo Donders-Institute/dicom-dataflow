@@ -9,7 +9,9 @@
 $ npm install config
 $ npm install redis
 $ npm install kue
-$ npm install tree-kill 
+$ npm install tree-kill
+$ npm install express
+$ npm install basic-auth-connect
 ```
 
 ## Start up service
