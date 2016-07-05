@@ -8,6 +8,8 @@
     "config": "",
     "redis": "",
     "kue": "",
-    "tree-kill": ""
+    "tree-kill": "",
+    "express": "",
+    "basic-auth-connect": ""
   }
 }
