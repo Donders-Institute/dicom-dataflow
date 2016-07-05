@@ -5,8 +5,7 @@ var kill = require('tree-kill');
 var queue = kue.createQueue({
     redis: {
         port: 6379,
-        //host: 'redis'
-        host: '0.0.0.0'
+        host: 'redis'
     }
 });
 var path = require('path');

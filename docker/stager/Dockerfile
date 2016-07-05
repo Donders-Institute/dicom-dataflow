@@ -15,6 +15,7 @@ COPY package.json package.json
 COPY *.js ./
 COPY bin/* ./bin/
 COPY config/* ./config/
+RUN ( $nodejs_prefix/bin/npm install express )
 RUN ( $nodejs_prefix/bin/npm install redis )
 RUN ( $nodejs_prefix/bin/npm install kue )
 RUN ( $nodejs_prefix/bin/npm install config )
