@@ -21,7 +21,7 @@ These containers are orchestrated by the docker-compose file `docker/docker-comp
 
 - sufficient space on directory `/scratch/data_dicom`
 - access to the project storage, i.e. the `/project` directory
-- firewall opened for in-bound connectivity via ports: `8042`, `4042` and `1234`
+- accepting inbound connectivity via ports: `8042`, `4042` and `1234`
 
 ### 2. configure access to private GitHub repositories and the databases
 
@@ -71,11 +71,11 @@ These containers are orchestrated by the docker-compose file `docker/docker-comp
 
 - directory `/scratch/data_stager`
 - access to the project storage, i.e. the `/project` directory
-- firewall opened for in-bound connectivity via ports: `3000`
+- accepting inbound connectivity via port: `3000`
 
 ### 2. configure the one-time password of the iRODS admin account
 
-The 6-digit one-time password for iRODS admin account `irods` should be provided in the file `docker/irods_otp` before you start up the containers.
+A _fresh_ 6-digit HOTP password for the iRODS admin `irods` should be provided in the file `docker/irods_otp` before you start up the containers. This allows stager to use the admin permission for moving/organising data within the DI-RDM system.
 
 ### 3. configure the username/password for accessing stager's RESTful interface
 
