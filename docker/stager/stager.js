@@ -118,10 +118,10 @@ if (cluster.isMaster) {
                 var job_stopped = false;
                 var execFile = require('child_process').execFile;
                 var child = execFile(cmd, cmd_args, cmd_opts, function(err, stdout, stderr) {
-                    // inform master the job has been stopped
-                    process.send({'type':'stop', 'jid': job.id});
+                    // push the last 5-lines of stdout to job log
+                    job.log({"stdout": stdout.split("\n").slice(-5)});
+                    // error handling
                     if (err) { throw new Error(stderr); }
-                    job_stopped = true;
                     done(null, stdout);
                 });
 
@@ -129,10 +129,12 @@ if (cluster.isMaster) {
                 process.send({'type':'START', 'jid': job.id, 'pid': child.pid});
 
                 child.on( "exit", function(code, signal) {
+                    // set interal flag indicating the job has been stopped
                     job_stopped = true;
                     // inform master the job has been stopped
                     process.send({'type':'STOP', 'jid': job.id});
-                    if ( signal != 'null' ) {
+                    // interruption handling (null if process is not interrupted) 
+                    if ( signal != null ) {
                         throw new Error('job terminated by ' + signal);
                     }
                 });
