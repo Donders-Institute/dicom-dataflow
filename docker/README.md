@@ -4,6 +4,8 @@ This instruction will show you how to build and start a few docker containers fo
 
 A high-level picture of the dataflow is illustrated as the picture below:
 
+![](dicome_dataflow_docker_containers.png)
+
 The containers are distinguished into two service sets, naming the __dicomdf__ and __stager__ service sets, as it is logical to run the two sets of containers on different docker hosts for distributing the load, for example.
 
 ## The "dicomdf" service set
