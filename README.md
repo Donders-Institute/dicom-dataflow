@@ -8,10 +8,10 @@ A schematic illustration of the dataflow is shown in the figure below:
 
 This package consists of a few services involved in realising the dataflow.  From the lab-booking event to raw data archive in the [DI-RDM](http://data.donders.ru.nl) system, they are:
 
-- A (cron-like) service running periodically to convert the lab-booking events into DICOM worklist.
-- A light-weight DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](http://dicom.offis.de) to serve scanning tasks to the MR scanners.
-- A DICOM PACS server powered by [Orthanc](http://www.orthanc-server.com/)
-- A data stager uploading raw data from the project storage to the [DI-RDM](https://data.donders.ru.nl) system.
+- __CAL2WL__: a (cron-like) service running periodically to convert the lab-booking events into DICOM worklist.
+- __WLBROKER__: a light-weight DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](http://dicom.offis.de) to serve scanning tasks to the MR scanners.
+- __PACS__: a [Orthanc](http://www.orthanc-server.com/)-powered DICOM PACS server.
+- __STAGER__: a data stager uploading raw data from the project storage to the [DI-RDM](https://data.donders.ru.nl) system.
 
 Those services are provided as [docker](http://docker.com) containers. 
 
