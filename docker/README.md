@@ -21,7 +21,7 @@ They are orchestrated by the docker-compose file `docker/docker-compose-dicomdf.
 - access to the project storage, i.e. the `/project` directory
 - accepting inbound connectivity via ports: `8042`, `4042` and `1234`
 
-### 2. configure access to private GitHub repositories and the databases
+### 2. configuration
 
 The files to be configured properly are:
 
