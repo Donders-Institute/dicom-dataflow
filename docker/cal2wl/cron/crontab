@@ -1,1 +1,2 @@
 30 * * * * /cron/dicom-labbooking2worklist.sh
+00 15 * * * /cron/dicom-clean-worklist.sh
