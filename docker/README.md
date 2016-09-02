@@ -2,8 +2,6 @@
 
 This instruction will show you how to build and start a few docker containers for enabling the DCCN DICOM dataflow.
 
-A high-level picture of the dataflow is illustrated as the picture below:
-
 The containers are distinguished into two service sets, naming the __dicomdf__ and __stager__ service sets, as it is logical to run the two sets of containers on different docker hosts for distributing the load, for example.
 
 ## The "dicomdf" service set
@@ -23,7 +21,7 @@ They are orchestrated by the docker-compose file `docker/docker-compose-dicomdf.
 - access to the project storage, i.e. the `/project` directory
 - accepting inbound connectivity via ports: `8042`, `4042` and `1234`
 
-### 2. configure access to private GitHub repositories and the databases
+### 2. configuration
 
 The files to be configured properly are:
 
