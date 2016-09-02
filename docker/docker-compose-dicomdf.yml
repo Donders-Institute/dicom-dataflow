@@ -15,7 +15,7 @@ services:
       - 131.174.44.34
     ports:
       - "8042:8042"
-      - "4042:4042"
+      - "4242:4242"
     volumes:
       - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
       - ./orthanc/scripts:/var/lib/orthanc/scripts
