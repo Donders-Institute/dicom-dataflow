@@ -1,5 +1,14 @@
 FROM dccn-dirdm-irodsclient
 
+# install cyberduck command-line interface
+RUN ( echo -e "[duck-stable]\n\
+name=duck-stable\n\
+baseurl=https://repo.cyberduck.io/stable/\$basearch/\n\
+enabled=1\n\
+gpgcheck=0" > /etc/yum.repos.d/duck-stable.repo )
+
+RUN ( yum -y install duck )
+
 # create temporary directory
 RUN ( mkdir -p /tmp )
 WORKDIR /tmp
