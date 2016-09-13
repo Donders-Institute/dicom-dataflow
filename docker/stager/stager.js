@@ -5,7 +5,7 @@ var kill = require('tree-kill');
 var queue = kue.createQueue({
     redis: {
         port: 6379,
-        host: 'redis'
+        host: '127.0.0.1'
     }
 });
 var path = require('path');
@@ -113,9 +113,12 @@ if (cluster.isMaster) {
                 var cmd = stager_bindir + path.sep + 's-irsync.sh';
                 var cmd_args = [ job.data.srcURL, job.data.dstURL ];
                 var cmd_opts = {
+                    maxBuffer: 10*1024*1024
                 };
   
+                var job_timeout_err;
                 var job_stopped = false;
+                var sec_noprogress = 0;
                 var execFile = require('child_process').execFile;
                 var child = execFile(cmd, cmd_args, cmd_opts, function(err, stdout, stderr) {
                     // push the last 5-lines of stdout to job log
@@ -128,6 +131,23 @@ if (cluster.isMaster) {
                 // inform master the job has been started
                 process.send({'type':'START', 'jid': job.id, 'pid': child.pid});
 
+                // define callback when data piped to child.stdout
+                child.stdout.on('data', function(data) {
+                    // use the child process's output to update job's progress
+                    job.progress(parseInt(data.trim()), 100);
+                    // reset noprogress time counter 
+                    sec_noprogress = 0;
+                });
+
+                child.stdout.on('error', function(err) {
+                    console.log("error on stdout");
+                });
+
+                child.stderr.on('error', function(err) {
+                    console.log("error on stderr");
+                });
+
+                // define callback when child process exits
                 child.on( "exit", function(code, signal) {
                     // set interal flag indicating the job has been stopped
                     job_stopped = true;
@@ -135,7 +155,11 @@ if (cluster.isMaster) {
                     process.send({'type':'STOP', 'jid': job.id});
                     // interruption handling (null if process is not interrupted) 
                     if ( signal != null ) {
-                        throw new Error('job terminated by ' + signal);
+                        if ( job_timeout_err === undefined ) {
+                            throw new Error('job terminated by ' + signal);
+                        } else {
+                            throw new Error('job terminated by ' + signal + ':' + job_timeout_err );
+                        }
                     }
                 });
 
@@ -148,21 +172,38 @@ if (cluster.isMaster) {
                     timeout = job.data.timeout;
                 }
 
+                var timeout_noprogress;
+                if ( job.data.timeout_noprogress === undefined || job.data.timeout_noprogress <= 0 ) {
+                    // no timeout
+                    timeout_noprogress = 3600;  
+                } else {
+                    timeout_noprogress = job.data.timeout_noprogress;
+                }
+
                 // initiate a monitor loop (timer) for heartbeat check on job status/progress
                 var t_beg = new Date().getTime() / 1000;
                 var timer = setInterval( function() {
                     if ( ! job_stopped ) {
-                        // job still running, timeout check
-                        if ( new Date().getTime()/1000 - t_beg > timeout ) {
+                        if ( sec_noprogress > timeout_noprogress ) {
+                            // job does not have any progress within an expected duration 
                             child.stdin.pause();
                             kill(child.pid, 'SIGKILL', function(err) {
+                                job_timeout_err = 'no progress for ' + timeout_noprogress + 's';
+                                console.log( '[' + new Date().toISOString() + '] job ' + job.id + ' killed due to no progress for ' + timeout_noprogress + 's' );
+                            });
+                        } else if ( new Date().getTime()/1000 - t_beg > timeout ) {
+                            // job is running over the expected duration
+                            child.stdin.pause();
+                            kill(child.pid, 'SIGKILL', function(err) {
+                                job_timeout_err = 'job timeout (> ' + timeout + 's)';
                                 console.log( '[' + new Date().toISOString() + '] job ' + job.id + ' killed due to timout (> ' + timeout + 's)');
                             });
                         } else {
-                            // TODO: check irsync progress and report back to the job progress
+                            // job doesn't reach any timeout, continue with nopgress time counter increased by 1 second 
+                            sec_noprogress += 1;
                         }
                     } else {
-                        // stop the timer 
+                        // stop the timer if job is stopped 
                         clearInterval(timer);
                     }
                 }, 1000 );
