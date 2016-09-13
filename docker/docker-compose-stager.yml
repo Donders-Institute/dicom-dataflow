@@ -3,6 +3,7 @@ services:
   redis:
     image: redis
     command: redis-server --appendonly yes
+    network_mode: "host"
     volumes:
       - /scratch/data_stager:/data
   dccn-dirdm-irodsclient:
@@ -12,11 +13,7 @@ services:
   dccn-dirdm-stager:
     build: ./stager
     image: dccn-dirdm-stager
-    dns:
-      - 131.174.44.33
-      - 131.174.44.34
-    ports:
-      - "3000:3000"
+    network_mode: "host"
     volumes:
       - /project:/project
       - ./irods_otp:/opt/stager/irods_otp:ro
