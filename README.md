@@ -25,8 +25,8 @@ Those services are provided as [docker](http://docker.com) containers.
 ### 1. checkout this package from GitHub
  
 ```bash
-$ git clone https://github.com/Donders-Institute/dccn-dicom-dataflow.git
-$ cd dccn-dicom-dataflow
+$ git clone https://github.com/Donders-Institute/dicom-dataflow.git
+$ cd dicom-dataflow
 ```
 
 ### 2. start docker containers
