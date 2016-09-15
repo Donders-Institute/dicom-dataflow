@@ -110,7 +110,13 @@ if (cluster.isMaster) {
             } else {
              
                 // TODO: make the logic implementation as a plug-in
-                var cmd = stager_bindir + path.sep + 's-irsync.sh';
+                var cmd;
+                if ( job.data.clientIF === undefined || job.data.clientIF == 'irods' ) {
+                    cmd = stager_bindir + path.sep + 's-irsync.sh';
+                } else {
+                    cmd = stager_bindir + path.sep + 's-duck.sh';
+                }
+
                 var cmd_args = [ job.data.srcURL, job.data.dstURL ];
                 var cmd_opts = {
                     maxBuffer: 10*1024*1024
