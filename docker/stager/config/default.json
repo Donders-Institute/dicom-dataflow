@@ -1,5 +1,11 @@
 {
     "apiUsers": {
         "admin": "admin"
+    },
+    "activeDirectory": {
+        "url": "ldap://ldap.localdomain",
+        "baseDN": "OU=ou,DC=dc",
+        "username": "ldapbind_username",
+        "password": "ldapbind_password"
     }
 }

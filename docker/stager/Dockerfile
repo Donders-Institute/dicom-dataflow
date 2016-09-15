@@ -39,6 +39,11 @@ RUN ( $nodejs_prefix/bin/npm install kue )
 RUN ( $nodejs_prefix/bin/npm install config )
 RUN ( $nodejs_prefix/bin/npm install tree-kill )
 RUN ( $nodejs_prefix/bin/npm install basic-auth-connect )
+RUN ( $nodejs_prefix/bin/npm install underscore )
+RUN ( $nodejs_prefix/bin/npm install async )
+RUN ( $nodejs_prefix/bin/npm install ldapjs )
+RUN ( $nodejs_prefix/bin/npm install bunyan )
+RUN ( $nodejs_prefix/bin/npm install activedirectory )
 COPY package.json package.json
 COPY *.js ./
 COPY bin/* ./bin/

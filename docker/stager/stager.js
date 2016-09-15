@@ -2,6 +2,7 @@ var config = require('config');
 var kue = require('kue');
 var cluster = require('cluster'); 
 var kill = require('tree-kill');
+var ActiveDirectory = require('activedirectory');
 var queue = kue.createQueue({
     redis: {
         port: 6379,
@@ -53,7 +54,14 @@ if (cluster.isMaster) {
     var basicAuth = require('basic-auth-connect');
     var app = express();
 
+    // simple authentication aganist ActiveDirectory 
+    var ad = new ActiveDirectory(config.get('activeDirectory'));
+    app.use( basicAuth( function(user, pass, fn) {
+         ad.authenticate(user, pass, fn);
+    }));
+
     // simple authentication based on a user/password table in the config file
+    /*
     app.use( basicAuth( function(user, pass) {
         var users = config.get('apiUsers');
         try {
@@ -66,6 +74,7 @@ if (cluster.isMaster) {
             return false;
         }
     }));
+    */
 
     // start service for RESTful APIs
     app.use(kue.app);
