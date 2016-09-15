@@ -3,9 +3,7 @@
         "admin": "admin"
     },
     "activeDirectory": {
-        "url": "ldap://ldap.localdomain",
-        "baseDN": "OU=ou,DC=dc",
-        "username": "ldapbind_username",
-        "password": "ldapbind_password"
+        "url": "ldap://dccn-w001.dccn.nl",
+        "baseDN": "OU=dccn,DC=dccn,DC=nl"
     }
 }
