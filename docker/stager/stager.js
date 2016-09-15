@@ -55,26 +55,25 @@ if (cluster.isMaster) {
     var app = express();
 
     // simple authentication aganist ActiveDirectory 
-    var ad = new ActiveDirectory(config.get('activeDirectory'));
-    app.use( basicAuth( function(user, pass, fn) {
-         ad.authenticate(user, pass, fn);
-    }));
+    var ad = new ActiveDirectory(config.get('ActiveDirectory'));
+    var admin = config.get('Administrator');
 
-    // simple authentication based on a user/password table in the config file
-    /*
-    app.use( basicAuth( function(user, pass) {
-        var users = config.get('apiUsers');
-        try {
-            if ( users[ user ] == pass ) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (err) {
-            return false;
-        }
+    app.use( basicAuth( function(user, pass, fn) {
+         var authenticated = false;
+         // authentication for admin: static username/password set 
+         try {
+             if ( admin[ user ] == pass ) {
+                 authenticated = true;
+             }
+         } catch (err) { }
+
+         if ( authenticated ) {
+             fn(null, true);
+         } else {
+             // authentication against active directory
+             ad.authenticate(user, pass, fn);
+         }
     }));
-    */
 
     // start service for RESTful APIs
     app.use(kue.app);

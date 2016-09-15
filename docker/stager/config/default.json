@@ -1,8 +1,8 @@
 {
-    "apiUsers": {
+    "Administrator": {
         "admin": "admin"
     },
-    "activeDirectory": {
+    "ActiveDirectory": {
         "url": "ldap://dccn-w001.dccn.nl",
         "baseDN": "OU=dccn,DC=dccn,DC=nl"
     }
