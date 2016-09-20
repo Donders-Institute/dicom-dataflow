@@ -48,14 +48,15 @@ COPY package.json package.json
 COPY *.js ./
 COPY bin/* ./bin/
 COPY lib ./lib
-COPY config/* ./config/
 COPY start_stager.sh start_stager.sh
+COPY config_stager.py config_stager.py
 RUN ( chmod +x start_stager.sh )
+RUN ( chmod +x config_stager.py )
 
 # run a stager
 ENV PYTHON_BINDIR /opt/python/bin
 ENV PYTHON_LIBDIR /opt/stager/lib/python
 ENV NODEJS_PREFIX $nodejs_prefix
-VOLUME [ "/project", "/opt/stager/irods_otp" ]
+VOLUME [ "/project", "/opt/stager/config/default.json" ]
 EXPOSE 3000
 CMD [ "/opt/stager/start_stager.sh" ]

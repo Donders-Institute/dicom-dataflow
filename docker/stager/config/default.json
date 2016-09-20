@@ -5,5 +5,13 @@
     "ActiveDirectory": {
         "url": "ldap://dccn-w001.dccn.nl",
         "baseDN": "OU=dccn,DC=dccn,DC=nl"
+    },
+    "RDM": {
+        "userName": "irods",
+        "userPass": "xxxxxx",
+        "icatHost": "icat.data.donders.ru.nl",
+        "icatPort": 1247,
+        "davEndpoint": "https://webdav.data.donders.ru.nl",
+        "restEndpoint": "https://webdav.data.donders.ru.nl/irods-rest/rest"
     }
 }

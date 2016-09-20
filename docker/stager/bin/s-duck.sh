@@ -41,7 +41,11 @@ if [ $# -ne 2 ]; then
 fi
 
 mydir=$( get_script_dir $0 )
-rest_pass=$( cat $mydir/../irods_otp )
+
+# get username/password from the config file: $mydir/../config/default.json
+rest_user=$( python -c "import json, os.path; c = json.load(open(os.path.join('${mydir}', '../config/default.json'))); print(c['RDM']['userName'])" )
+rest_pass=$( python -c "import json, os.path; c = json.load(open(os.path.join('${mydir}', '../config/default.json'))); print(c['RDM']['userPass'])" )
+dav_endpt=$( python -c "import json, os.path; c = json.load(open(os.path.join('${mydir}', '../config/default.json'))); print(c['RDM']['davEndpoint'])" )
 
 src=$( echo $1 | sed 's/irods:/i:/g' )
 dst=$( echo $2 | sed 's/irods:/i:/g' )
@@ -56,7 +60,7 @@ if [ $? -eq 0 ]; then
     is_src_irods=1
     src_coll=$( echo $src | sed 's/^i://' )
 
-    t=$( ${mydir}/irodsGetNamespaceType.py --rest_user irods --rest_pass ${rest_pass} ${src_coll} )
+    t=$( ${mydir}/irodsGetNamespaceType.py --rest_user ${rest_user} --rest_pass ${rest_pass} ${src_coll} )
     if [ $? -ne 0 ]; then
         exit $?
     fi
@@ -68,7 +72,7 @@ if [ $? -eq 0 ]; then
         w_total=1
     else
         is_src_dir=1
-        w_total=$( ${mydir}/irodsCountFilesInCollection.py --rest_user irods --rest_pass ${rest_pass} ${src_coll} )
+        w_total=$( ${mydir}/irodsCountFilesInCollection.py --rest_user ${rest_user} --rest_pass ${rest_pass} ${src_coll} )
         if [ $? -ne 0 ]; then
             exit $?
         fi
@@ -97,7 +101,7 @@ if [ $? -eq 0 ]; then
     is_dst_irods=1
     dst_coll=$( echo $dst | sed 's/^i://' )
 
-    t=$( ${mydir}/irodsGetNamespaceType.py --rest_user irods --rest_pass ${rest_pass} ${dst_coll} )
+    t=$( ${mydir}/irodsGetNamespaceType.py --rest_user ${rest_user} --rest_pass ${rest_pass} ${dst_coll} )
 
     if [ $? -ne 0 ]; then
         exit $?
@@ -132,7 +136,7 @@ fi
 # make sure the dst_dir is created
 if [ $is_dst_dir -eq 1 ]; then
     if [ $is_dst_irods -eq 1 ]; then
-        ${mydir}/irodsMakeDir.py "$( echo $dst | sed 's/^i://' )" > /dev/null 2>&1
+        ${mydir}/irodsMakeDir.py --rest_user ${rest_user} --rest_pass ${rest_pass} "$( echo $dst | sed 's/^i://' )" > /dev/null 2>&1
     else
         mkdir -p "${dst}"
     fi
@@ -151,17 +155,17 @@ if [ $w_total -gt 0 ]; then
 
     if [ $is_dst_irods -eq 1 ]; then
         dst_coll=$(echo $dst | sed 's/^i://')
-        duck_sync_url="davs://webdav.data.donders.ru.nl${dst_coll}"
+        duck_sync_url="$( echo ${dav_endpt} | sed 's/https/davs/' )${dst_coll}"
         duck_sync_dir=$src
         duck_sync_method="upload"
     else
         src_coll=$(echo $src | sed 's/^i://')
-        duck_sync_url="davs://webdav.data.donders.ru.nl${src_coll}"
+        duck_sync_url="$( echo ${dav_endpt} | sed 's/https/davs/' )${src_coll}"
         duck_sync_dir=$dst
         duck_sync_method="download"
     fi
 
-    duck -y --parallel 2 -u irods -p ${rest_pass} -e ${duck_sync_method} --synchronize \"${duck_sync_url}\" \"${duck_sync_dir}\" 2>/tmp/duck.err.$$ 1>/tmp/duck.out.$$ &
+    duck -y --parallel 2 -u ${rest_user} -p ${rest_pass} -e ${duck_sync_method} --synchronize \"${duck_sync_url}\" \"${duck_sync_dir}\" 2>/tmp/duck.err.$$ 1>/tmp/duck.out.$$ &
     duck_pid=$!
 
     p1=0

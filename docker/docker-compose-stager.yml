@@ -16,7 +16,7 @@ services:
     network_mode: "host"
     volumes:
       - /project:/project
-      - ./irods_otp:/opt/stager/irods_otp:ro
+      - ./stager/config/default.json:/opt/stager/config/default.json:ro
     depends_on:
       - dccn-dirdm-irodsclient
       - redis
