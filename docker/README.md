@@ -71,15 +71,16 @@ They are orchestrated by the docker-compose file `docker/docker-compose-stager.y
 - access to the project storage, i.e. the `/project` directory
 - accepting inbound connectivity via port: `3000`
 
-### 2. configure the one-time password of the iRODS admin account
+### 2. configure the stager
 
-A _fresh_ 6-digit HOTP password for the iRODS admin `irods` should be provided in the file `docker/irods_otp` before you start up the containers. This allows stager to use the admin permission for moving/organising data within the DI-RDM system.
+You have to change the parameters in the file `docker/stager/config/default.json` for
 
-### 3. configure the username/password for accessing stager's RESTful interface
+- stager administrator's username and password (by default they are `admin` and `admin`)
+- active directory binding information (to authenticate user for accessing the stager)
+- username and one-time password for accessing RDM service
+- WebDAV and RESTful endpoint for the RDM service (if the WebDAV interface is used for staging files)
 
-For the moment, the RESTful interface is protected by a simple username/password with default `admin:admin`.  You may change it in the file `docker/stager/config/default.json` before you build the containers.
-
-### 4. start docker containers for the service set "stager" 
+### 3. start docker containers for the service set "stager"
 
 Build docker containers using the following command:
 
