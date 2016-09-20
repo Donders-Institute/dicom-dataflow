@@ -198,7 +198,10 @@ if [ $w_total -gt 0 ]; then
 
     # too bad that duck doesn't return error when the sync is incomplete, we must check against the duck.out.$$
     tail /tmp/duck.out.$$ | grep -i 'Sync complete' > /dev/null 2>&1
-    if [ $? -ne 0 ] || [ $p1 -ne 100 ]; then
+    if [ $? -eq 0 ]; then
+        p1=100
+        echo $p1
+    else
         echo 'Sync incomplete' 1>&2
         duck_ec=1
         # print duck process's error
