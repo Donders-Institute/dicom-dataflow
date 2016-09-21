@@ -11,7 +11,8 @@
         "userPass": "xxxxxx",
         "icatHost": "icat.data.donders.ru.nl",
         "icatPort": 1247,
+        "restEndpoint": "https://webdav.data.donders.ru.nl/irods-rest/rest",
         "davEndpoint": "https://webdav.data.donders.ru.nl",
-        "restEndpoint": "https://webdav.data.donders.ru.nl/irods-rest/rest"
+        "davRootNamespace": "/rdm/di"
     }
 }

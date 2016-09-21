@@ -153,13 +153,15 @@ if [ $w_total -gt 0 ]; then
     w_done=0
     w_done_percent=0
 
+    dav_rootns=$( python -c "import json, os.path; c = json.load(open(os.path.join('${mydir}', '../config/default.json'))); print(c['RDM']['davRootNamespace'])" )
+
     if [ $is_dst_irods -eq 1 ]; then
-        dst_coll=$(echo $dst | sed 's/^i://')
+        dst_coll=$(echo $dst | sed 's/^i://' | sed "s|${dav_rootns}||")
         duck_sync_url="$( echo ${dav_endpt} | sed 's/https/davs/' )${dst_coll}"
         duck_sync_dir=$src
         duck_sync_method="upload"
     else
-        src_coll=$(echo $src | sed 's/^i://')
+        src_coll=$(echo $src | sed 's/^i://' | sed "s|${dav_rootns}||")
         duck_sync_url="$( echo ${dav_endpt} | sed 's/https/davs/' )${src_coll}"
         duck_sync_dir=$dst
         duck_sync_method="download"
