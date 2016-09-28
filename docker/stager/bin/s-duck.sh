@@ -62,7 +62,8 @@ if [ $? -eq 0 ]; then
 
     t=$( ${mydir}/irodsGetNamespaceType.py --rest_user ${rest_user} --rest_pass ${rest_pass} ${src_coll} )
     if [ $? -ne 0 ]; then
-        exit $?
+        echo "fail to get namespace type: ${src_coll}" 1>&2
+        exit 1
     fi
 
     if [ "${t}" == "UNKNOWN" ]; then
@@ -74,7 +75,7 @@ if [ $? -eq 0 ]; then
         is_src_dir=1
         w_total=$( ${mydir}/irodsCountFilesInCollection.py --rest_user ${rest_user} --rest_pass ${rest_pass} ${src_coll} )
         if [ $? -ne 0 ]; then
-            exit $?
+            exit 1
         fi
     fi
 else
@@ -104,7 +105,8 @@ if [ $? -eq 0 ]; then
     t=$( ${mydir}/irodsGetNamespaceType.py --rest_user ${rest_user} --rest_pass ${rest_pass} ${dst_coll} )
 
     if [ $? -ne 0 ]; then
-        exit $?
+        echo "fail to get namespace type: ${dst_coll}" 1>&2
+        exit 1
     fi
 
     if [ "$t" == "UNKNOWN" ]; then
@@ -117,6 +119,8 @@ else
         if [ -d $dst ]; then
             is_dst_dir=1
         fi
+    elif [ "${dst: -1}" == "/" ]; then
+            is_dst_dir=1
     else
         is_dst_dir=$is_src_dir
     fi
@@ -167,7 +171,12 @@ if [ $w_total -gt 0 ]; then
         duck_sync_method="download"
     fi
 
-    duck -y --parallel 2 -u ${rest_user} -p ${rest_pass} -e ${duck_sync_method} --synchronize \"${duck_sync_url}\" \"${duck_sync_dir}\" 2>/tmp/duck.err.$$ 1>/tmp/duck.out.$$ &
+    if [ $w_total -eq 1 ] && [ $duck_sync_method == 'download' ]; then
+        duck -y --parallel 2 -r 2 -u ${rest_user} -p ${rest_pass} -e overwrite --${duck_sync_method} \"${duck_sync_url}\" \"${duck_sync_dir}\" 2>/tmp/duck.err.$$ 1>/tmp/duck.out.$$ &
+    else 
+        duck -y --parallel 2 -r 2 -u ${rest_user} -p ${rest_pass} -e ${duck_sync_method} --synchronize \"${duck_sync_url}\" \"${duck_sync_dir}\" 2>/tmp/duck.err.$$ 1>/tmp/duck.out.$$ &
+    fi
+
     duck_pid=$!
 
     p1=0
@@ -199,7 +208,7 @@ if [ $w_total -gt 0 ]; then
     fi
 
     # too bad that duck doesn't return error when the sync is incomplete, we must check against the duck.out.$$
-    cat /tmp/duck.out.$$ | grep -i 'Sync complete' > /dev/null 2>&1
+    cat /tmp/duck.out.$$ | grep -ie '[Sync|Download|Upload] complete' > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         p1=100
         echo $p1
