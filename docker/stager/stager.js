@@ -2,7 +2,7 @@ var config = require('config');
 var kue = require('kue');
 var cluster = require('cluster'); 
 var kill = require('tree-kill');
-var ActiveDirectory = require('activedirectory');
+var bodyParser = require('body-parser');
 var queue = kue.createQueue({
     redis: {
         port: 6379,
@@ -49,31 +49,24 @@ queue.on( 'error', function(err) {
 
 if (cluster.isMaster) {
 
-    // set up basic authentication for RESTful APIs
+    // set up express app 
     var express = require('express');
-    var basicAuth = require('basic-auth-connect');
     var app = express();
 
-    // simple authentication aganist ActiveDirectory 
-    var ad = new ActiveDirectory(config.get('ActiveDirectory'));
-    var admin = config.get('Administrator');
+    // bodyParser so that FORM data become available in req.body 
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: false }));
 
-    app.use( basicAuth( function(user, pass, fn) {
-         var authenticated = false;
-         // authentication for admin: static username/password set 
-         try {
-             if ( admin[ user ] == pass ) {
-                 authenticated = true;
-             }
-         } catch (err) { }
+    // basicAuth 
+    var auth = require('./routes/auth'); 
+    app.use(auth.basicAuthAD);
 
-         if ( authenticated ) {
-             fn(null, true);
-         } else {
-             // authentication against active directory
-             ad.authenticate(user, pass, fn);
-         }
-    }));
+    // expose stager's local filesystem 
+    var stager_fstree = require('./routes/stager_fstree_sftp'); 
+    app.post('/fstree/stager', stager_fstree.getDirList);
+
+    var rdm_fstree = require('./routes/rdm_fstree_restful');
+    app.post('/fstree/rdm', rdm_fstree.getDirList);
 
     // start service for RESTful APIs
     app.use(kue.app);

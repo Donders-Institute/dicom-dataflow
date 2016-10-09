@@ -38,16 +38,21 @@ RUN ( $nodejs_prefix/bin/npm install redis )
 RUN ( $nodejs_prefix/bin/npm install kue )
 RUN ( $nodejs_prefix/bin/npm install config )
 RUN ( $nodejs_prefix/bin/npm install tree-kill )
-RUN ( $nodejs_prefix/bin/npm install basic-auth-connect )
+#RUN ( $nodejs_prefix/bin/npm install basic-auth-connect )
+RUN ( $nodejs_prefix/bin/npm install basic-auth )
 RUN ( $nodejs_prefix/bin/npm install underscore )
 RUN ( $nodejs_prefix/bin/npm install async )
 RUN ( $nodejs_prefix/bin/npm install ldapjs )
 RUN ( $nodejs_prefix/bin/npm install bunyan )
 RUN ( $nodejs_prefix/bin/npm install activedirectory )
+RUN ( $nodejs_prefix/bin/npm install ssh2 )
+RUN ( $nodejs_prefix/bin/npm install node-rest-client )
+RUN ( $nodejs_prefix/bin/npm install body-parser )
 COPY package.json package.json
 COPY *.js ./
 COPY bin/* ./bin/
 COPY lib ./lib
+COPY routes ./routes
 COPY start_stager.sh start_stager.sh
 COPY config_stager.py config_stager.py
 RUN ( chmod +x start_stager.sh )

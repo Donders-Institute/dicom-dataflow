@@ -5,11 +5,19 @@
   "author": "Hurng-Chun Lee <h.lee@donders.ru.nl>",
   "main": "stager.js",
   "dependencies" : {
-    "config": "",
+    "express": "",
     "redis": "",
     "kue": "",
+    "config": "",
     "tree-kill": "",
-    "express": "",
-    "basic-auth-connect": ""
+    "basic-auth": "",
+    "underscore": "",
+    "async": "",
+    "ldapjs": "",
+    "bunyan": "",
+    "activedirectory: "",
+    "ssh2": "",
+    "node-rest-client": "",
+    "body-parser": ""
   }
 }
