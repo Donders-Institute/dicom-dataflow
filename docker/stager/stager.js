@@ -68,6 +68,12 @@ if (cluster.isMaster) {
     var rdm_fstree = require('./routes/rdm_fstree_restful');
     app.post('/fstree/rdm', rdm_fstree.getDirList);
 
+    var stager_fslogin = require('./routes/stager_fslogin_sftp');
+    app.post('/fslogin/stager', stager_fslogin.authenticateUser);
+
+    var rdm_fslogin = require('./routes/rdm_fslogin_restful');
+    app.post('/fslogin/rdm', rdm_fslogin.authenticateUser);
+
     // start service for RESTful APIs
     app.use(kue.app);
     app.listen(3000);
