@@ -48,6 +48,7 @@ RUN ( $nodejs_prefix/bin/npm install activedirectory )
 RUN ( $nodejs_prefix/bin/npm install ssh2 )
 RUN ( $nodejs_prefix/bin/npm install node-rest-client )
 RUN ( $nodejs_prefix/bin/npm install body-parser )
+RUN ( $nodejs_prefix/bin/npm install posix )
 COPY package.json package.json
 COPY *.js ./
 COPY bin/* ./bin/

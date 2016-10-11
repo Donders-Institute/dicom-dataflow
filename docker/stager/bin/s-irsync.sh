@@ -10,11 +10,41 @@ Usage:
 EOF
 }
 
+function get_script_dir() {
+
+    ## resolve the base directory of this executable
+    local SOURCE=$1
+    while [ -h "$SOURCE" ]; do
+        # resolve $SOURCE until the file is no longer a symlink
+        DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+        SOURCE="$(readlink "$SOURCE")"
+
+        # if $SOURCE was a relative symlink,
+        # we need to resolve it relative to the path
+        # where the symlink file was located
+
+        [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+    done
+
+    echo "$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+}
+
 # check if control file is given
 if [ $# -ne 2 ]; then
     print_usage
     exit 1
 fi
+
+mydir=$( get_script_dir $0 )
+rdm_user=$( python -c "import json, os.path; c = json.load(open(os.path.join('${mydir}', '../config/default.json'))); print(c['RDM']['userName'])" )
+rdm_pass=$( python -c "import json, os.path; c = json.load(open(os.path.join('${mydir}', '../config/default.json'))); print(c['RDM']['userPass'])" )
+
+export IRODS_AUTHENTICATION_FILE=/tmp/.irodsA.$$
+export IRODS_USER_NAME=$rdm_user
+
+ienv >> /tmp/test.$$
+
+echo $rdm_pass | iinit
 
 src=$( echo $1 | sed 's/irods:/i:/g' )
 dst=$( echo $2 | sed 's/irods:/i:/g' )

@@ -18,6 +18,7 @@
     "activedirectory: "",
     "ssh2": "",
     "node-rest-client": "",
-    "body-parser": ""
+    "body-parser": "",
+    "posix": ""
   }
 }

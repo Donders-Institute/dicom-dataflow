@@ -3,6 +3,7 @@ var kue = require('kue');
 var cluster = require('cluster'); 
 var kill = require('tree-kill');
 var bodyParser = require('body-parser');
+var posix = require('posix');
 var queue = kue.createQueue({
     redis: {
         port: 6379,
@@ -128,6 +129,14 @@ if (cluster.isMaster) {
                 var cmd_opts = {
                     maxBuffer: 10*1024*1024
                 };
+
+                if ( typeof job.data.localUser !== "undefined" ) {
+                    proc_user = posix.getpwnam(job.data.localUser);
+                    cmd_opts.uid = proc_user.uid;
+                    cmd_opts.gid = proc_user.gid;
+                }
+
+                console.log(cmd_opts);
   
                 var job_timeout_err;
                 var job_stopped = false;
