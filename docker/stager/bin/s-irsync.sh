@@ -42,9 +42,7 @@ rdm_pass=$( python -c "import json, os.path; c = json.load(open(os.path.join('${
 export IRODS_AUTHENTICATION_FILE=/tmp/.irodsA.$$
 export IRODS_USER_NAME=$rdm_user
 
-ienv >> /tmp/test.$$
-
-echo $rdm_pass | iinit
+echo $rdm_pass | iinit > /dev/null 2>&1
 
 src=$( echo $1 | sed 's/irods:/i:/g' )
 dst=$( echo $2 | sed 's/irods:/i:/g' )

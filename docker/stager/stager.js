@@ -136,8 +136,6 @@ if (cluster.isMaster) {
                     cmd_opts.gid = proc_user.gid;
                 }
 
-                console.log(cmd_opts);
-  
                 var job_timeout_err;
                 var job_stopped = false;
                 var sec_noprogress = 0;
