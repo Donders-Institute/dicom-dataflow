@@ -62,6 +62,9 @@ if (cluster.isMaster) {
     var auth = require('./routes/auth'); 
     app.use(auth.basicAuthAD);
 
+    // start service for RESTful APIs
+    app.use(kue.app);
+
     // expose stager's local filesystem 
     var stager_fstree = require('./routes/stager_fstree_sftp'); 
     app.post('/fstree/stager', stager_fstree.getDirList);
@@ -75,8 +78,6 @@ if (cluster.isMaster) {
     var rdm_fslogin = require('./routes/rdm_fslogin_restful');
     app.post('/fslogin/rdm', rdm_fslogin.authenticateUser);
 
-    // start service for RESTful APIs
-    app.use(kue.app);
     app.listen(3000);
 
     // fork workers
@@ -130,8 +131,8 @@ if (cluster.isMaster) {
                     maxBuffer: 10*1024*1024
                 };
 
-                if ( typeof job.data.localUser !== "undefined" ) {
-                    proc_user = posix.getpwnam(job.data.localUser);
+                if ( typeof job.data.stagerUser !== "undefined" ) {
+                    proc_user = posix.getpwnam(job.data.stagerUser.split('@')[0]);
                     cmd_opts.uid = proc_user.uid;
                     cmd_opts.gid = proc_user.gid;
                 }
