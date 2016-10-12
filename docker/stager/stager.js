@@ -54,13 +54,13 @@ if (cluster.isMaster) {
     var express = require('express');
     var app = express();
 
-    // bodyParser so that FORM data become available in req.body 
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: false }));
-
     // basicAuth 
     var auth = require('./routes/auth'); 
     app.use(auth.basicAuthAD);
+
+    // bodyParser so that FORM data become available in req.body 
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: false }));
 
     // start service for RESTful APIs
     app.use(kue.app);
@@ -69,14 +69,14 @@ if (cluster.isMaster) {
     var stager_fstree = require('./routes/stager_fstree_sftp'); 
     app.post('/fstree/stager', stager_fstree.getDirList);
 
-    var rdm_fstree = require('./routes/rdm_fstree_restful');
-    app.post('/fstree/rdm', rdm_fstree.getDirList);
+    //var rdm_fstree = require('./routes/rdm_fstree_restful');
+    //app.post('/fstree/rdm', rdm_fstree.getDirList);
 
     var stager_fslogin = require('./routes/stager_fslogin_sftp');
     app.post('/fslogin/stager', stager_fslogin.authenticateUser);
 
-    var rdm_fslogin = require('./routes/rdm_fslogin_restful');
-    app.post('/fslogin/rdm', rdm_fslogin.authenticateUser);
+    //var rdm_fslogin = require('./routes/rdm_fslogin_restful');
+    //app.post('/fslogin/rdm', rdm_fslogin.authenticateUser);
 
     app.listen(3000);
 
