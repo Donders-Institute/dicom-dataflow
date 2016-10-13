@@ -53,7 +53,7 @@ w_total=0
 is_src_dir=0
 echo $src | egrep '^i:' > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-    src_coll=$( echo $src | sed 's/^i://' )
+    src_coll=$( echo $src | sed 's/^i://' | sed 's/\/$//' )
     ils $src_coll > /dev/null 2>&1
     if [ $? -ne 0 ]; then
         echo "file or collection not found: $src_coll" 1>&2
@@ -139,7 +139,7 @@ fi
 if [ $w_total -gt 0 ]; then
     w_done=0
     w_done_percent=0
-    irsync -v -K -r "${src}" "${dst}" | while read -r line; do
+    unbuffer irsync -v -K -r "${src}" "${dst}" | while read -r line; do
         w_done=$(( $w_done + 1 ))
         w_done_percent_new=$(( $w_done * 100 / $w_total ))
         if [ $w_done_percent_new -gt $w_done_percent ]; then

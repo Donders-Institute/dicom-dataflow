@@ -30,6 +30,9 @@ ARG nodejs_prefix=/opt/nodejs
 ADD https://nodejs.org/dist/v4.4.7/node-v4.4.7-linux-x64.tar.xz /tmp
 RUN ( tar xf node-v4.4.7-linux-x64.tar.xz && mv node-v4.4.7-linux-x64 $nodejs_prefix )
 
+# install expect so that we get unbuffer to get irsync progress, progressively 
+RUN ( yum -y install expect )
+
 # install stager scripts and required nodejs modules
 RUN ( mkdir -p /opt/stager/bin )
 WORKDIR /opt/stager
