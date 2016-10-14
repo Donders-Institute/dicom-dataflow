@@ -111,7 +111,7 @@ function OnStableSeries(seriesId, tags, metadata)
        local path_rdm = projectDirRdm .. '/raw/mri/' ..
                         t[2] .. '/' ..
                         study['StudyID'] .. '/' ..
-                        string.format("%02d", series['SeriesNumber']) .. '_' .. ToAscii(series['SeriesDescription'])
+                        string.format("%03d", series['SeriesNumber']) .. '_' .. ToAscii(series['SeriesDescription'])
   
        for i, instance in pairs(instances) do
        
