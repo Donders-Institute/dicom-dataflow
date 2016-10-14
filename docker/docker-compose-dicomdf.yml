@@ -10,40 +10,28 @@ services:
   dccn-orthanc:
     build: ./orthanc
     image: dccn-dicomdf-orthanc
-    dns:
-      - 131.174.44.33
-      - 131.174.44.34
-    ports:
-      - "8042:8042"
-      - "4242:4242"
+    network_mode: "host"
     volumes:
       - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
       - ./orthanc/scripts:/var/lib/orthanc/scripts
       - ./orthanc/plugins:/var/lib/orthanc/plugins
-      - /scratch/data_dicom/orthanc/db:/var/lib/orthanc/db
-      - /scratch/data_dicom/orthanc/log:/var/lib/orthanc/log
+      - /data/orthanc/db:/var/lib/orthanc/db
+      - /data/orthanc/log:/var/lib/orthanc/log
       - /project:/project
   dccn-wlbroker:
     build: ./wlbroker
     image: dccn-dicomdf-wlbroker
     depends_on:
       - dccn-dicomdf-base
-    dns:
-      - 131.174.44.33
-      - 131.174.44.34
-    ports:
-      - "1234:1234"
+    network_mode: "host"
     volumes:
-      - /scratch/data_dicom/wlbroker:/data/wlbroker
+      - /data/wlbroker:/data/wlbroker
   dccn-cronie-cal2wl:
     build: ./cal2wl
     image: dccn-dicomdf-cal2wl
     depends_on:
       - dccn-dicomdf-base
-    dns:
-      - 131.174.44.33
-      - 131.174.44.34
     volumes:
-      - /scratch/data_dicom/wlbroker:/data/wlbroker
+      - /data/wlbroker:/data/wlbroker
       - ./cal2wl/cron:/cron
       - ./cal2wl/config.ini:/opt/config.ini:ro
