@@ -76,7 +76,7 @@ function submitStagerJob(seriesId, srcURL, dstURL)
         print('stager job ' .. jid .. ' submitted')
         return jid 
     else
-        print('Oops! stager return ' .. status)
+        print('Oops! stager return: ' .. code)
         return nil
     end
 end
