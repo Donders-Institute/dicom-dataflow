@@ -21,7 +21,7 @@
 
   // Maximum size of the storage in MB (a value of "0" indicates no
   // limit on the storage size)
-  "MaximumStorageSize" : 500000,
+  "MaximumStorageSize" : 2000000,
 
   // Maximum number of patients that can be stored at a given time
   // in the storage (a value of "0" indicates no limit on the number

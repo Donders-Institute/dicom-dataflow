@@ -132,7 +132,7 @@ function OnStableSeries(seriesId, tags, metadata)
 
           if not target then
               -- Sending error message to PACS manager
-              sendAlert("cannot write data to project: " .. projectDir .. "\n\nfile: " .. fname)
+              -- sendAlert("cannot write data to project: " .. projectDir .. "\n\nfile: " .. fname)
 
               -- throw out an error to interrupt the for-loop
               error("cannot write data file: " .. path)
@@ -147,7 +147,7 @@ function OnStableSeries(seriesId, tags, metadata)
        local ick = submitStagerJob(seriesId, path, path_rdm)
        if not ick then
            -- Sending error message to PACS manager
-           sendAlert("fail sending RDM staging job: " .. path)
+           -- sendAlert("fail sending RDM staging job: " .. path)
 
            -- throw out an error to interrupt the for-loop
            error("fail sending RDM staging job: " .. path)
