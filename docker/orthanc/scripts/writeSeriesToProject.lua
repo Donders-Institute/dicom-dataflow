@@ -131,10 +131,10 @@ function OnStableSeries(seriesId, tags, metadata)
 
           if not target then
               -- Sending error message to PACS manager
-              sendAlert("cannot write data to project: " .. projectDir .. "\n\nfile: " .. fname")
+              sendAlert("cannot write data to project: " .. projectDir .. "\n\nfile: " .. fname)
 
               -- throw out an error to interrupt the for-loop
-              error("cannot write data file: " .. path ..)
+              error("cannot write data file: " .. path)
           else
               target:write(dicom)
               target:close()
@@ -149,8 +149,8 @@ function OnStableSeries(seriesId, tags, metadata)
            sendAlert("fail sending RDM staging job: " .. path)
 
            -- throw out an error to interrupt the for-loop
-           error("fail sending RDM staging job: " .. path ..)
-       else
+           error("fail sending RDM staging job: " .. path)
+       end
     else
         print('project directory ' .. projectDir .. ' not exist, skipped.')
     end
