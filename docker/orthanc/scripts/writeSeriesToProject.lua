@@ -1,9 +1,20 @@
 TARGET_PRJ = '/project'
 TARGET_RDM = 'irods:/rdm/di/dccn/DAC_3010000.01_173'
+ADMINS = 'h.lee@dccn.nl,mp.zwiers@gmail.com'
+STAGER_USER = 'root'
+RDM_USER = 'irods'
 
 function ToAscii(s)
     -- http://www.lua.org/manual/5.1/manual.html#pdf-string.gsub
     return s:gsub('[^a-zA-Z0-9-/ ]', '_')
+end
+
+function sendAlert(m)
+    -- send alert email to administrators
+    local mail = io.popen("mail -s '!!PACS alert!!' " .. ADMINS, "w")
+    mail:write("" .. m .. "\n")
+    mail:close()
+    return true
 end
 
 function DirExists(strFolderName)
@@ -31,11 +42,16 @@ function submitStagerJob(seriesId, srcURL, dstURL)
     stagerJob["type"] = "rdm" 
     stagerJob["data"] = {}
     stagerJob["options"] = {}
+    stagerJob["data"]["clientIF"] = 'irods'
+    stagerJob["data"]["stagerUser"] = STAGER_USER
+    stagerJob["data"]["rdmUser"] = RDM_USER
     stagerJob["data"]["srcURL"] = srcURL .. '/'
     stagerJob["data"]["dstURL"] = dstURL .. '/'
     stagerJob["data"]["title"] = '[' .. os.date("!%c") .. '] Orthanc series: ' .. seriesId
-    stagerJob["options"]["attempts"] = 3 
-    stagerJob["options"]["backoff"] = {} 
+    stagerJob["data"]["timeout"] = 3600
+    stagerJob["data"]["timeout_noprogress"] = 600
+    stagerJob["options"]["attempts"] = 5
+    stagerJob["options"]["backoff"] = {}
     stagerJob["options"]["backoff"]["delay"] = 60000
     stagerJob["options"]["backoff"]["type"] = "fixed"
 
@@ -89,7 +105,7 @@ function OnStableSeries(seriesId, tags, metadata)
        local path = projectDir .. '/raw/mri/' ..
                     t[2] .. '/' ..
                     study['StudyID'] .. '/' ..
-                    string.format("%02d", series['SeriesNumber']) .. '_' .. ToAscii(series['SeriesDescription'])
+                    string.format("%03d", series['SeriesNumber']) .. '_' .. ToAscii(series['SeriesDescription'])
  
        local path_rdm = projectDirRdm .. '/raw/mri/' ..
                         t[2] .. '/' ..
@@ -106,20 +122,35 @@ function OnStableSeries(seriesId, tags, metadata)
           -- Create the subdirectory (CAUTION: For Linux demo only, this is insecure!)
           -- http://stackoverflow.com/a/16029744/881731
           os.execute('mkdir -p "' .. path .. '"')
-  
+
           -- Compose absolute file name 
           local fname = path .. '/' .. string.format("%05d", tags['InstanceNumber']) .. '_' .. tags['SOPInstanceUID'] .. '.IMA'
   
           -- Write to the file
-          local target = assert(io.open(fname, 'wb'))
-          target:write(dicom)
-          target:close()
+          local target = io.open(fname, 'wb')
+
+          if not target then
+              -- Sending error message to PACS manager
+              sendAlert("cannot write data to project: " .. projectDir .. "\n\nfile: " .. fname")
+
+              -- throw out an error to interrupt the for-loop
+              error("cannot write data file: " .. path ..)
+          else
+              target:write(dicom)
+              target:close()
+          end
        end
  
        -- Submit job to stage series to RDM
        print('submitting stager job for series ' .. seriesId)
-       submitStagerJob(seriesId, path, path_rdm)
- 
+       local ick = submitStagerJob(seriesId, path, path_rdm)
+       if not ick then
+           -- Sending error message to PACS manager
+           sendAlert("fail sending RDM staging job: " .. path)
+
+           -- throw out an error to interrupt the for-loop
+           error("fail sending RDM staging job: " .. path ..)
+       else
     else
         print('project directory ' .. projectDir .. ' not exist, skipped.')
     end
