@@ -1,6 +1,7 @@
 TARGET_PRJ = '/project'
 TARGET_RDM = 'irods:/rdm/di/dccn/DAC_3010000.01_173'
 ADMINS = 'h.lee@dccn.nl,mp.zwiers@gmail.com'
+STAGER_URL = 'http://stager.dccn.nl:3000/job'
 STAGER_USER = 'root'
 RDM_USER = 'irods'
 
@@ -59,7 +60,7 @@ function submitStagerJob(seriesId, srcURL, dstURL)
     local response_body = {} 
 
     local res, code, response_header, status = http.request {
-        url = 'http://pacs.dccn.nl:3000/job',
+        url = STAGER_URL,
         method = 'POST',
         headers = {
             ["Authorization"]  = "Basic " .. (mime.b64("admin:admin")),
