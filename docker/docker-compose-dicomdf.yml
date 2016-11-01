@@ -4,8 +4,8 @@ services:
     build:
       context: ./base
       args:
-        - github_username=demo
-        - github_password=guessit
+        - github_username=hurngchunlee
+        - github_password=leeh6430
     image: dccn-dicomdf-base
   dccn-orthanc:
     build: ./orthanc
@@ -16,6 +16,7 @@ services:
       - ./orthanc/scripts:/var/lib/orthanc/scripts
       - ./orthanc/plugins:/var/lib/orthanc/plugins
       - /data/orthanc/db:/var/lib/orthanc/db
+      - /scratch/orthanc/idx:/var/lib/orthanc/idx
       - /data/orthanc/log:/var/lib/orthanc/log
       - /project:/project
   dccn-wlbroker:
