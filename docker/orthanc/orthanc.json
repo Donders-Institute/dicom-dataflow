@@ -14,14 +14,14 @@
   // Path to the directory that holds the SQLite index (if unset,
   // the value of StorageDirectory is used). This index could be
   // stored on a RAM-drive or a SSD device for performance reasons.
-  "IndexDirectory" : "/var/lib/orthanc/db",
+  "IndexDirectory" : "/var/lib/orthanc/idx",
 
   // Enable the transparent compression of the DICOM instances
   "StorageCompression" : false,
 
   // Maximum size of the storage in MB (a value of "0" indicates no
   // limit on the storage size)
-  "MaximumStorageSize" : 2000000,
+  "MaximumStorageSize" : 1800000,
 
   // Maximum number of patients that can be stored at a given time
   // in the storage (a value of "0" indicates no limit on the number
@@ -32,7 +32,6 @@
   // into this instance of Orthanc
   "LuaScripts" : [
       "/var/lib/orthanc/scripts/accesscontrol.lua",
-      "/var/lib/orthanc/scripts/autorouting.lua",
       "/var/lib/orthanc/scripts/writeSeriesToProject.lua"
   ],
 
@@ -41,13 +40,12 @@
   // "./PluginTest.dll" for Windows). These paths can refer to
   // folders, in which case they will be scanned non-recursively to
   // find shared libraries.
-  "Plugins" : [ 
-    "/usr/share/orthanc/plugins",
-    "/usr/local/share/orthanc/plugins", 
-    "/var/lib/orthanc/plugins"
-  ],
-
-
+  //"Plugins" : [ 
+  //  "/usr/share/orthanc/plugins",
+  //  "/usr/local/share/orthanc/plugins", 
+  //  "/var/lib/orthanc/plugins"
+  //],
+  "Plugins" : [],
 
   /**
    * Configuration of the HTTP server
@@ -70,7 +68,7 @@
   // Enable HTTP compression to improve network bandwidth utilization,
   // at the expense of more computations on the server. Orthanc
   // supports the "gzip" and "deflate" HTTP encodings.
-  "HttpCompressionEnabled" : true,
+  "HttpCompressionEnabled" : false,
 
 
 
@@ -110,7 +108,7 @@
 
   // Whether Orthanc accepts to act as C-Store SCP for unknown storage
   // SOP classes (aka. "promiscuous mode")
-  "UnknownSopClassAccepted"            : false,
+  "UnknownSopClassAccepted"            : true,
 
 
 
@@ -156,7 +154,8 @@
     "MRI-PRISMAFIT" : [ "PRISMAFIT", "prismafit.dccn.nl", 104 ],
     "MRI-SKYRA"     : [ "SKYRA",  "skyra.dccn.nl",  104 ],
     "MRI-PRISMA"    : [ "PRISMA", "prisma.dccn.nl", 104 ],
-    "PACS-ISD"      : [ "isd0aa13", "isd0aa13.isd.med.uni-muenchen.de", 11122 ],
+    "PLORTHANC"     : [ "PLORTHANC", "pl-torque.dccn.nl", 4242 ],
+    //"PACS-ISD"      : [ "isd0aa13", "isd0aa13.isd.med.uni-muenchen.de", 11122 ],
     "local"         : [ "DCCNPACS", "localhost", 4242 ]
 
     /**
