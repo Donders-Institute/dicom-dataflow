@@ -103,15 +103,15 @@ function OnStableSeries(seriesId, tags, metadata)
     if DirExists(projectDir) then
  
        -- compose path to path of the image instance
-       local path = projectDir .. '/raw/mri/' ..
+       local path = projectDir .. '/raw/' ..
                     t[2] .. '/' ..
                     study['StudyID'] .. '/' ..
-                    string.format("%03d", series['SeriesNumber']) .. '_' .. ToAscii(series['SeriesDescription'])
+                    string.format("%03d", series['SeriesNumber']) .. '-' .. ToAscii(series['SeriesDescription'])
  
-       local path_rdm = projectDirRdm .. '/raw/mri/' ..
+       local path_rdm = projectDirRdm .. '/raw/' ..
                         t[2] .. '/' ..
                         study['StudyID'] .. '/' ..
-                        string.format("%03d", series['SeriesNumber']) .. '_' .. ToAscii(series['SeriesDescription'])
+                        string.format("%03d", series['SeriesNumber']) .. '-' .. ToAscii(series['SeriesDescription'])
   
        for i, instance in pairs(instances) do
        
