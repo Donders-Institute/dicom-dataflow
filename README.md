@@ -15,7 +15,7 @@ This package consists of a few services involved in realising the dataflow.  Fro
 
 Those services are provided as [docker](http://docker.com) containers.
 
-Note: The Stager service is now provided as a separate package.  It can be found in [https://github.com/donders-research-data-management/rdm-stager](this repository).
+Note: The Stager service is now provided as a separate package.  It can be found in [this repository](https://github.com/donders-research-data-management/rdm-stager).
 
 ## Requirements 
 
