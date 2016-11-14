@@ -1,7 +1,6 @@
 TARGET_PRJ = '/project'
-TARGET_RDM = 'irods:/rdm/di/dccn/DAC_3010000.01_173'
 ADMINS = 'h.lee@dccn.nl,mp.zwiers@gmail.com'
-STAGER_URL = 'http://stager.dccn.nl:3000/job'
+STAGER_URL = 'http://stager.dccn.nl:3000'
 STAGER_USER = 'root'
 RDM_USER = 'irods'
 
@@ -33,6 +32,35 @@ function DirExists(strFolderName)
     end
 end
 
+function getDacForProject(projectId)
+
+    -- get DAC namespace for a project
+    local http = require('socket.http')
+    local ltn12 = require('ltn12')
+    local mime = require('mime')
+
+    local response_body = {} 
+
+    local res, code, response_header, status = http.request {
+        url = STAGER_URL .. '/rdm/DAC/project/' .. projectId,
+        method = 'GET',
+        headers = {
+            ["Authorization"]  = "Basic " .. (mime.b64("admin:admin")),
+            ["Content-Type"]   = "application/json",
+        },
+        sink = ltn12.sink.table(response_body)
+    }
+
+    if code == 200 then
+        local collName = ParseJson(table.concat(response_body)) ['collName']
+        print('DAC for ' .. projectId .. ': ' .. collName)
+        return collName
+    else
+        print('DAC for ' .. projectId .. ': unknown')
+        return nil
+    end
+end
+
 function submitStagerJob(seriesId, srcURL, dstURL)
     -- submit a stager job to upload series data to RDM 
     local http = require('socket.http')
@@ -60,7 +88,7 @@ function submitStagerJob(seriesId, srcURL, dstURL)
     local response_body = {} 
 
     local res, code, response_header, status = http.request {
-        url = STAGER_URL,
+        url = STAGER_URL .. '/job',
         method = 'POST',
         headers = {
             ["Authorization"]  = "Basic " .. (mime.b64("admin:admin")),
@@ -94,10 +122,10 @@ function OnStableSeries(seriesId, tags, metadata)
         t[j] = pp
         j = j + 1
     end
- 
+
+    -- project storage directory
     local projectDir = TARGET_PRJ .. '/' .. t[1]
-    local projectDirRdm = TARGET_RDM .. '/' .. t[1]
- 
+
     print('Writing stable series ' .. seriesId .. ' to project: ' .. t[1])
  
     if DirExists(projectDir) then
@@ -108,11 +136,6 @@ function OnStableSeries(seriesId, tags, metadata)
                     study['StudyID'] .. '/' ..
                     string.format("%03d", series['SeriesNumber']) .. '-' .. ToAscii(series['SeriesDescription'])
  
-       local path_rdm = projectDirRdm .. '/raw/' ..
-                        t[2] .. '/' ..
-                        study['StudyID'] .. '/' ..
-                        string.format("%03d", series['SeriesNumber']) .. '-' .. ToAscii(series['SeriesDescription'])
-  
        for i, instance in pairs(instances) do
        
           local tags = ParseJson(RestApiGet('/instances/' .. instance)) ['MainDicomTags']
@@ -143,15 +166,26 @@ function OnStableSeries(seriesId, tags, metadata)
        end
  
        -- Submit job to stage series to RDM
-       print('submitting stager job for series ' .. seriesId)
-       local ick = submitStagerJob(seriesId, path, path_rdm)
-       if not ick then
-           -- Sending error message to PACS manager
-           -- sendAlert("fail sending RDM staging job: " .. path)
-
-           -- throw out an error to interrupt the for-loop
-           error("fail sending RDM staging job: " .. path)
-       end
+       -- get DAC namespace from the stager
+       local projectDirRdm = getDacForProject(t[1])
+       if projectDirRdm then
+           local path_rdm = 'irods:' .. projectDirRdm .. '/raw/' ..
+                            t[2] .. '/' ..
+                            study['StudyID'] .. '/' ..
+                            string.format("%03d", series['SeriesNumber']) .. '-' .. ToAscii(series['SeriesDescription'])
+        
+           print('submitting stager job for series ' .. seriesId)
+           local ick = submitStagerJob(seriesId, path, path_rdm)
+           if not ick then
+               -- Sending error message to PACS manager
+               -- sendAlert("fail sending RDM staging job: " .. path)
+        
+               -- throw out an error to interrupt the for-loop
+               error("fail sending RDM staging job: " .. path)
+           end
+        else
+           print("No DAC defined for project: " .. t[1] .. ', RDM archive skipped.')
+        end
     else
         print('project directory ' .. projectDir .. ' not exist, skipped.')
     end
