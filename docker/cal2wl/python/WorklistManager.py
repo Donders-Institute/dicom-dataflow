@@ -187,7 +187,9 @@ class WorklistManager:
 
                 d = re.compile('\s*(-)\s*').split(subj_ses)
                 subjectId = d[0]
-                sessionId = d[-1]
+
+                # always set session id to '1' if it's not part of subj_ses string 
+                sessionId = d[-1] if len(d) > 1 else '1'
 
                 # in some MySQL library, the startTime is returned as timedelta object
                 eStartTime = None
