@@ -16,7 +16,7 @@ class WorklistItem(object):
         self.projectId = projectId
         self.projectTitle = projectTitle
         self.subjectId = subjectId
-        self.sessionId = 'ses-mri-%s' % sessionId.zfill(2)
+        self.sessionId = 'ses-mri%s' % sessionId.zfill(2)
         self.sessionTitle = 'MR session %s' % sessionId.zfill(2)
         self.date = date
         self.time = time
@@ -28,14 +28,16 @@ class WorklistItem(object):
         if re.match('^[xX]',subjectId):  # subjectId with leading 'x' or 'X' is considered as an extra subject
             self.patientId = '%s_sub-x%s' % (projectId, re.sub('^[xX]','',subjectId).zfill(3))
         else:
-            self.patientId = '%s_sub-%s' % (projectId, subjectId.zfill(4))
+            self.patientId = '%s_sub-%s' % (projectId, subjectId.zfill(3))
+
+        self.patientName = '%s_ses%s' % (self.patientId, sessionId.zfill(2))
 
         self.studyId = '%s_S%s' % (projectId, sessionId.zfill(2))
 
     def getWorklistTemplate(self):
         """worklist template for Cheetah template engine"""
 
-        worklist_tmpl ="""(0010,0010) PN  [$e['patientId']]
+        worklist_tmpl ="""(0010,0010) PN  [$e['patientName']]
 (0010,0020) LO  [$e['patientId']]
 (0020,000d) UI  [$e['eventId']]
 (0032,1032) PN  [$e['physician']]
