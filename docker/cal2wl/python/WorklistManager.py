@@ -30,7 +30,7 @@ class WorklistItem(object):
         else:
             self.patientId = '%s_sub-%s' % (projectId, subjectId.zfill(3))
 
-        self.patientName = '%s_ses%s' % (self.patientId, sessionId.zfill(2))
+        self.patientName = '%s_ses-%s' % (self.patientId, sessionId.zfill(2))
 
         self.studyId = '%s_S%s' % (projectId, sessionId.zfill(2))
 
