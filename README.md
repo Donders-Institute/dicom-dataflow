@@ -10,7 +10,7 @@ This package consists of the services indiciated by the blue blocks:
 
 - __CAL2WL__: a (cron-like) service running periodically to convert the lab-booking events into DICOM worklist.
 - __WLBROKER__: a light-weight DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](http://dicom.offis.de) to serve worklist to the MR scanners.
-- __ORTHANC__: a DICOM PACS server implementation: [Orthanc](http://www.orthanc-server.com/) .
+- __ORTHANC__: a DICOM PACS server implementation. The website of [Orthanc](http://www.orthanc-server.com/).
 
 Those services are provided as [docker](http://docker.com) containers.
 
