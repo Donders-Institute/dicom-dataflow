@@ -1,12 +1,12 @@
 # DCCN DICOM dataflow
 
-_NOTE: this package has strong dependency on the DCCN research facility, such as the project-based storage, properly configured MRI scanners and the [DI-RDM](http://data.donders.ru.nl) system._
+_NOTE: this package has strong dependency on the DCCN research facility, such as the project-based storage and properly configured MRI scanners._
 
 A schematic illustration of the dataflow is shown in the figure below:
 
 ![](dicom_dataflow_docker_containers.png)
 
-This package consists of a few services involved in realising the dataflow.  From the lab-booking event to raw data archive in the [DI-RDM](http://data.donders.ru.nl) system, they are:
+This package consists of the services indiciated by the blue blocks:
 
 - __CAL2WL__: a (cron-like) service running periodically to convert the lab-booking events into DICOM worklist.
 - __WLBROKER__: a light-weight DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](http://dicom.offis.de) to serve worklist to the MR scanners.
