@@ -14,7 +14,7 @@ This package consists of the services indiciated by the blue blocks:
 
 Those services are provided as [docker](http://docker.com) containers.
 
-Note: The service for streaming data from the PACS server to project storage and data archive is provided as a separate package called `streamer`.  It can be found in [this repository](https://github.com/Donders-Institute/streamer).
+Note: The service for streaming data from the PACS server to project storage and data archive is provided as a separate package called __Streamer__.  See [this repository](https://github.com/Donders-Institute/streamer).
 
 ## Requirements 
 
