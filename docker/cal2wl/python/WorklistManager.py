@@ -27,6 +27,8 @@ class WorklistItem(object):
 
         if re.match('^[xX]',subjectId):  # subjectId with leading 'x' or 'X' is considered as an extra subject
             self.patientId = '%s_sub-x%s' % (projectId, re.sub('^[xX]','',subjectId).zfill(3))
+        elif re.match('^Undefined',subjectId):  # undefined subject
+            self.patientId = '%s_sub-%sT%s' % (projectId, date, time)
         else:
             self.patientId = '%s_sub-%s' % (projectId, subjectId.zfill(3))
 
