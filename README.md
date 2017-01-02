@@ -11,11 +11,10 @@ This package consists of a few services involved in realising the dataflow.  Fro
 - __CAL2WL__: a (cron-like) service running periodically to convert the lab-booking events into DICOM worklist.
 - __WLBROKER__: a light-weight DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](http://dicom.offis.de) to serve worklist to the MR scanners.
 - __PACS__: a [Orthanc](http://www.orthanc-server.com/)-powered DICOM PACS server.
-- ~~__STAGER__: a data stager uploading raw data from the project storage to the [DI-RDM](https://data.donders.ru.nl) system~~
 
 Those services are provided as [docker](http://docker.com) containers.
 
-Note: The Stager service is now provided as a separate package.  It can be found in [this repository](https://github.com/donders-research-data-management/rdm-stager).
+Note: The service for streaming data from the PACS server to project storage and data archive is provided as a separate package called `streamer`.  It can be found in [this repository](https://github.com/Donders-Institute/streamer).
 
 ## Requirements 
 
