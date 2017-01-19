@@ -11,7 +11,7 @@ COPY python/dicom-labbooking2worklist.py /opt/hpc-utility/python/bin/
 RUN chmod +x /opt/hpc-utility/python/bin/dicom-labbooking2worklist.py
 
 # shared volumes
-VOLUME [ "/cron", "/data/wlbroker", "/opt/config.ini" ]
+VOLUME [ "/cron", "/data/wlbroker", "/opt/config" ]
 
 # start the cron
 CMD $PYTHON_PREFIX/bin/devcron.py /cron/crontab

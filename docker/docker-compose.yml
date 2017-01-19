@@ -12,7 +12,7 @@ services:
     image: dccn-dicomdf-orthanc
     network_mode: "host"
     volumes:
-      - ./orthanc/etc:/var/lib/orthanc/etc:ro
+      - ./orthanc/config:/var/lib/orthanc/etc:ro
       - ./orthanc/scripts:/var/lib/orthanc/scripts
       - ./orthanc/plugins:/var/lib/orthanc/plugins
       - /data/orthanc/db:/var/lib/orthanc/db
@@ -35,4 +35,4 @@ services:
     volumes:
       - /data/wlbroker:/data/wlbroker
       - ./cal2wl/cron:/cron
-      - ./cal2wl/config.ini:/opt/config.ini:ro
+      - ./cal2wl/config:/opt/config:ro
