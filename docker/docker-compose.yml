@@ -4,15 +4,15 @@ services:
     build:
       context: ./base
       args:
-        - github_username=hurngchunlee
-        - github_password=leeh6430
+        - github_username=xxxxxx
+        - github_password=xxxxxx
     image: dccn-dicomdf-base
   dccn-orthanc:
     build: ./orthanc
     image: dccn-dicomdf-orthanc
     network_mode: "host"
     volumes:
-      - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
+      - ./orthanc/etc:/var/lib/orthanc/etc:ro
       - ./orthanc/scripts:/var/lib/orthanc/scripts
       - ./orthanc/plugins:/var/lib/orthanc/plugins
       - /data/orthanc/db:/var/lib/orthanc/db

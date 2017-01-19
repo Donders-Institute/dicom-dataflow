@@ -8,10 +8,9 @@ WORKDIR /tmp/lua-5.1
 RUN ( make linux test && make install )
 RUN ( git clone https://github.com/diegonehab/luasocket.git && cd luasocket && make && make install )
 
-VOLUME [ "/var/lib/orthanc/log", "/var/lib/orthanc/db", "/var/lib/orthanc/idx", "/var/lib/orthanc/scripts", "/var/lib/orthanc/plugins", "/project" ]
+VOLUME [ "/var/lib/orthanc/log", "/var/lib/orthanc/db", "/var/lib/orthanc/idx", "/var/lib/orthanc/scripts", "/var/lib/orthanc/plugins", "/var/lib/orthanc/etc", "/project" ]
 EXPOSE 4242
 EXPOSE 8042
 
 WORKDIR /var/lib/orthanc
-ENTRYPOINT [ "Orthanc", "--logdir=/var/lib/orthanc/log" ]
-CMD [ "/etc/orthanc/" ]
+ENTRYPOINT [ "Orthanc", "--logdir=/var/lib/orthanc/log", "/var/lib/orthanc/etc" ]
