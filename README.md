@@ -1,21 +1,20 @@
 # DCCN DICOM dataflow
 
-_NOTE: this package has strong dependency on the DCCN research facility, such as the project-based storage, properly configured MRI scanners and the [DI-RDM](http://data.donders.ru.nl) system._
+_NOTE: this package has strong dependency on the DCCN research facility, such as the project-based storage and properly configured MRI scanners._
 
 A schematic illustration of the dataflow is shown in the figure below:
 
 ![](dicom_dataflow_docker_containers.png)
 
-This package consists of a few services involved in realising the dataflow.  From the lab-booking event to raw data archive in the [DI-RDM](http://data.donders.ru.nl) system, they are:
+This package consists of the services indiciated by the blue blocks:
 
 - __CAL2WL__: a (cron-like) service running periodically to convert the lab-booking events into DICOM worklist.
 - __WLBROKER__: a light-weight DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](http://dicom.offis.de) to serve worklist to the MR scanners.
-- __PACS__: a [Orthanc](http://www.orthanc-server.com/)-powered DICOM PACS server.
-- ~~__STAGER__: a data stager uploading raw data from the project storage to the [DI-RDM](https://data.donders.ru.nl) system~~
+- __ORTHANC__: a DICOM PACS server implementation. The website of [Orthanc](http://www.orthanc-server.com/).
 
 Those services are provided as [docker](http://docker.com) containers.
 
-Note: The Stager service is now provided as a separate package.  It can be found in [this repository](https://github.com/donders-research-data-management/rdm-stager).
+Note: The service for streaming data from the PACS server to project storage and data archive is provided as a separate package called __Streamer__.  See [this repository](https://github.com/Donders-Institute/streamer).
 
 ## Requirements 
 
