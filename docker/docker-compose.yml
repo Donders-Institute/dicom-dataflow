@@ -13,11 +13,9 @@ services:
     network_mode: "host"
     volumes:
       - ./orthanc/config:/var/lib/orthanc/etc:ro
-      - ./orthanc/scripts:/var/lib/orthanc/scripts
-      - ./orthanc/plugins:/var/lib/orthanc/plugins
-      - /data/orthanc/db:/var/lib/orthanc/db
-      - /scratch/orthanc/idx:/var/lib/orthanc/idx
       - /data/orthanc/log:/var/lib/orthanc/log
+      - /data/orthanc/db:/var/lib/orthanc/db
+      - /data/orthanc/idx:/var/lib/orthanc/idx
       - /project:/project
   dccn-wlbroker:
     build: ./wlbroker
