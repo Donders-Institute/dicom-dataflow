@@ -16,7 +16,6 @@ services:
       - /data/orthanc/log:/var/lib/orthanc/log
       - /data/orthanc/db:/var/lib/orthanc/db
       - /data/orthanc/idx:/var/lib/orthanc/idx
-      - /project:/project
   dccn-wlbroker:
     build: ./wlbroker
     image: dccn-dicomdf-wlbroker
