@@ -16,6 +16,8 @@ services:
       - /data/orthanc/log:/var/lib/orthanc/log
       - /data/orthanc/db:/var/lib/orthanc/db
       - /data/orthanc/idx:/var/lib/orthanc/idx
+    environment:
+      - STREAMER_URL=http://streamer.dccn.nl:3001
   dccn-wlbroker:
     build: ./wlbroker
     image: dccn-dicomdf-wlbroker
@@ -31,5 +33,4 @@ services:
       - dccn-dicomdf-base
     volumes:
       - /data/wlbroker:/data/wlbroker
-      - ./cal2wl/cron:/cron
       - ./cal2wl/config:/opt/config:ro
