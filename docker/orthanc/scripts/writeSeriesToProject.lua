@@ -1,5 +1,3 @@
-STREAMER_URL = 'http://pacs.dccn.nl:3001'
-
 function submitStreamerJob(seriesId)
     -- submit a stager job to upload series data to RDM 
     local http = require('socket.http')
@@ -8,7 +6,7 @@ function submitStreamerJob(seriesId)
 
     local response_body = {} 
     local res, code, response_header, status = http.request {
-        url = STREAMER_URL .. '/mri/series/' .. seriesId,
+        url = os.getenv('STREAMER_URL') .. '/mri/series/' .. seriesId,
         method = 'POST',
         headers = {
             ["Authorization"]  = "Basic " .. (mime.b64("admin:admin"))
