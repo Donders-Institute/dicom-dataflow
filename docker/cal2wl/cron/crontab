@@ -1,2 +1,2 @@
-30 * * * * /cron/dicom-labbooking2worklist.sh
-00 15 * * * /cron/dicom-clean-worklist.sh
+30 * * * * /bin/bash -c 'source /cron/env.sh && /cron/dicom-labbooking2worklist.sh >> /data/log/cal2wl.log 2>&1'
+00 15 * * * /bin/bash -c 'source /cron/env.sh && /cron/dicom-clean-worklist.sh > /dev/null 2>&1'
