@@ -1,4 +1,4 @@
-FROM jodogne/orthanc:1.1.0
+FROM jodogne/orthanc:1.2.0
 
 # installing lua 5.1 and socket module
 WORKDIR /tmp
