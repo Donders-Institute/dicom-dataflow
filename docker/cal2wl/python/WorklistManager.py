@@ -43,6 +43,7 @@ class WorklistItem(object):
 (0010,0020) LO  [$e['patientId']]
 (0020,000d) UI  [$e['eventId']]
 (0032,1032) PN  [$e['physician']]
+(0008,0090) PN  [$e['physician']]
 (0032,1060) LO  [$e['projectTitle']]
 (0040,1001) SH  [$e['sessionId']]
 (0040,0100) SQ
