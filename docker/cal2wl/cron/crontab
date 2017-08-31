@@ -1,2 +1,2 @@
-10 * * * * /bin/bash -c 'source /cron/env.sh && /cron/dicom-labbooking2worklist.sh >> /data/log/cal2wl.log 2>&1'
+*/10 * * * * /bin/bash -c 'source /cron/env.sh && /cron/dicom-labbooking2worklist.sh >> /data/log/cal2wl.log 2>&1'
 00 1 * * * /bin/bash -c 'source /cron/env.sh && /cron/dicom-clean-worklist.sh > /dev/null 2>&1'
