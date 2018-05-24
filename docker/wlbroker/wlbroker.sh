@@ -11,7 +11,7 @@ LOG_DIR=${WLBROKER_DATADIR}/log
 
 # load dcmtk
 export PATH=${DCMTK_PREFIX}/bin:$PATH
-export LD_LIBRARY_PATH=${DCMTK_PREFIX}/lib:$PATH
+export LD_LIBRARY_PATH=${DCMTK_PREFIX}/lib64:$LD_LIBRARY_PATH
 export DCMDICTPATH=${DCMTK_PREFIX}/share/dcmtk/dicom.dic
 
 # let see how we were called

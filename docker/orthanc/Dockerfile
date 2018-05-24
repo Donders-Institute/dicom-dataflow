@@ -14,7 +14,7 @@ VOLUME [ "/var/lib/orthanc/log", "/var/lib/orthanc/db", "/var/lib/orthanc/idx", 
 EXPOSE 4242
 EXPOSE 8042
 
-ENV STREAMER_URL="http://pacs.dccn.nl:3001"
+ENV STREAMER_URL="http://streamer:3001"
 
 WORKDIR /var/lib/orthanc
 ENTRYPOINT [ "Orthanc", "--logdir=/var/lib/orthanc/log", "/var/lib/orthanc/etc" ]

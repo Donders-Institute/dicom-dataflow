@@ -82,7 +82,7 @@
   "DicomServerEnabled" : true,
 
   // The DICOM Application Entity Title
-  "DicomAet" : "DCCNPACS",
+  "DicomAet" : "DCCNPACSTST",
 
   // Check whether the called AET corresponds during a DICOM request
   "DicomCheckCalledAet" : false,
@@ -120,13 +120,13 @@
   "RemoteAccessAllowed" : true,
 
   // Whether or not SSL is enabled
-  "SslEnabled" : false,
+  "SslEnabled" : true,
 
   // Path to the SSL certificate (meaningful only if SSL is enabled)
-  "SslCertificate" : "certificate.pem",
+  "SslCertificate" : "/var/lib/orthanc/etc/certificate.pem",
 
   // Whether or not the password protection is enabled
-  "AuthenticationEnabled" : false,
+  "AuthenticationEnabled" : true,
 
   // The list of the registered users. Because Orthanc uses HTTP
   // Basic Authentication, the passwords are stored as plain text.
@@ -151,12 +151,7 @@
      * command line "storescp 2000".
      **/
     // "sample" : [ "STORESCP", "localhost", 2000 ]
-    "MRI-PRISMAFIT" : [ "PRISMAFIT", "prismafit.dccn.nl", 104 ],
-    "MRI-SKYRA"     : [ "SKYRA",  "skyra.dccn.nl",  104 ],
-    "MRI-PRISMA"    : [ "PRISMA", "prisma.dccn.nl", 104 ],
-    "PLORTHANC"     : [ "PLORTHANC", "pl-torque.dccn.nl", 4242 ],
-    //"PACS-ISD"      : [ "isd0aa13", "isd0aa13.isd.med.uni-muenchen.de", 11122 ],
-    "local"         : [ "DCCNPACS", "localhost", 4242 ]
+    "local"     : [ "DCCNPACSTST", "orthanc", 4242 ]
 
     /**
      * A fourth parameter is available to enable patches for a
@@ -273,7 +268,7 @@
   // are issued. This option sets the number of seconds of inactivity
   // to wait before automatically closing a DICOM association. If set
   // to 0, the connection is closed immediately.
-  "DicomAssociationCloseDelay" : 5,
+  "DicomAssociationCloseDelay" : 0,
 
   // Maximum number of query/retrieve DICOM requests that are
   // maintained by Orthanc. The least recently used requests get
