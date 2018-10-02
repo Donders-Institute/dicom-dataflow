@@ -120,13 +120,13 @@
   "RemoteAccessAllowed" : true,
 
   // Whether or not SSL is enabled
-  "SslEnabled" : true,
+  "SslEnabled" : false,
 
   // Path to the SSL certificate (meaningful only if SSL is enabled)
-  "SslCertificate" : "/var/lib/orthanc/etc/certificate.pem",
+  "SslCertificate" : "",
 
   // Whether or not the password protection is enabled
-  "AuthenticationEnabled" : true,
+  "AuthenticationEnabled" : false,
 
   // The list of the registered users. Because Orthanc uses HTTP
   // Basic Authentication, the passwords are stored as plain text.
