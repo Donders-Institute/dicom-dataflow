@@ -1,8 +1,8 @@
-FROM jodogne/orthanc:1.2.0
+FROM jodogne/orthanc:1.4.2
 
 # installing lua 5.1 and socket module
 WORKDIR /tmp
-RUN ( apt-get update && apt-get install -y ncurses-dev git curl )
+RUN ( apt-get update && apt-get install -y ncurses-dev git curl make libreadline-dev )
 RUN ( curl -R -O https://www.lua.org/ftp/lua-5.1.tar.gz && tar xvzf lua-5.1.tar.gz )
 WORKDIR /tmp/lua-5.1
 RUN ( make linux test && make install )
