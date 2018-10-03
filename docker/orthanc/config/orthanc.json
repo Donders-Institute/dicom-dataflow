@@ -131,7 +131,6 @@
   // The list of the registered users. Because Orthanc uses HTTP
   // Basic Authentication, the passwords are stored as plain text.
   "RegisteredUsers" : {
-    "orthanc" : "orthanc",
     "admin" : "admin"
     // "alice" : "alicePassword"
   },
