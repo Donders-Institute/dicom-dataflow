@@ -1,26 +1,19 @@
 function submitStreamerJob(seriesId)
     -- submit a stager job to upload series data to RDM 
-    local http = require('socket.http')
-    local ltn12 = require('ltn12')
-    local mime = require('mime')
+    local url = os.getenv('STREAMER_URL') .. '/mri/series/' .. seriesId
 
-    local response_body = {} 
-    local res, code, response_header, status = http.request {
-        url = os.getenv('STREAMER_URL') .. '/mri/series/' .. seriesId,
-        method = 'POST',
-        headers = {
-            ["Authorization"]  = "Basic " .. (mime.b64("admin:admin"))
-        },
-        sink = ltn12.sink.table(response_body)
-    }
+    SetHttpCredentials('admin', 'admin')
 
-    if code == 200 then
-        local msg = ParseJson(table.concat(response_body)) ['message']
-        print('streamer job submitted: ' .. msg)
-        return true
-    else
-        print('Oops! streamer return: ' .. code)
+    local answer = HttpPost(url, nil)
+    if answer == nil or answer == '' then
+        print('Oops! fail POST to stremaer')
         return nil
+    elseif answer == 'ERROR' then
+        print('Oops! streamer return: ' .. answer)
+        return nil
+    else
+        print('streamer job submitted: ' .. answer)
+        return true
     end
 end
 
