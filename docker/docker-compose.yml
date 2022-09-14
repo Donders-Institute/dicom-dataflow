@@ -1,15 +1,15 @@
-version: "2"
+version: "2.2"
 
 services:
   base:
     build:
       context: ./base
-    image: dccn-dicomdf-base
+    image: ${DOCKER_REGISTRY:-dccn}/dicomdf-base:${DOCKER_IMAGE_TAG:-latest}
     networks:
       - nw-dicom-dataflow
   orthanc:
     build: ./orthanc
-    image: dccn-dicomdf-orthanc
+    image: ${DOCKER_REGISTRY:-dccn}/dicomdf-orthanc:${DOCKER_IMAGE_TAG:-latest}
     networks:
       - nw-dicom-dataflow
     hostname: orthanc
@@ -17,15 +17,15 @@ services:
       - 8042:8042
       - 4242:4242
     volumes:
-      - ./orthanc/config:/var/lib/orthanc/etc:ro
-      - vol-orthanc-log:/var/lib/orthanc/log
-      - vol-orthanc-db:/var/lib/orthanc/db
-      - vol-orthanc-idx:/var/lib/orthanc/idx
+      - ${VOL_ORTHANC_CONFIG:-./orthanc/config}:/var/lib/orthanc/etc:ro
+      - ${VOL_ORTHANC_LOG:-vol-orthanc-log}:/var/lib/orthanc/log
+      - ${VOL_ORTHANC_DB:-vol-orthanc-db}:/var/lib/orthanc/db
+      - ${VOL_ORTHANC_IDX:-vol-orthanc-idx}:/var/lib/orthanc/idx
     environment:
       - STREAMER_URL=http://streamer:3001
   wlbroker:
     build: ./wlbroker
-    image: dccn-dicomdf-wlbroker
+    image: ${DOCKER_REGISTRY:-dccn}/dicomdf-wlbroker:${DOCKER_IMAGE_TAG:-latest}
     depends_on:
       - base
     networks:
@@ -34,18 +34,18 @@ services:
     ports:
       - 1234:1234
     volumes:
-      - vol-wlbroker:/data/wlbroker
+      - ${VOL_WLBROKER:-vol-wlbroker}:/data/wlbroker
   cal2wl:
     build: ./cal2wl
-    image: dccn-dicomdf-cal2wl
+    image: ${DOCKER_REGISTRY:-dccn}/dicomdf-cal2wl:${DOCKER_IMAGE_TAG:-latest}
     depends_on:
       - base
     networks:
       - nw-dicom-dataflow
     hostname: cal2wl
     volumes:
-      - ./cal2wl/config:/opt/config:ro
-      - vol-wlbroker:/data/wlbroker
+      - ${VOL_CAL2WL_CONFIG:-./cal2wl/config}:/opt/config:ro
+      - ${VOL_WLBROKER:-vol-wlbroker}:/data/wlbroker
 
 networks:
   nw-dicom-dataflow:

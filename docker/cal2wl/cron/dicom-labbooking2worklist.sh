@@ -1,8 +1,10 @@
 #!/bin/bash
 
-export PATH=$PYTHON_PREFIX/bin:$DCMTK_PREFIX/bin:$PATH
+export PATH=$DCMTK_PREFIX/bin:$PATH
 
 today=$( date +%Y-%m-%d )
 #today=2016-06-01
 
-$DCCN_PYTHONDIR/bin/dicom-labbooking2worklist.py -c /opt/config/config.ini -d $today -s $WLBROKER_DIR
+[ ! -d $WLBROKER_DIR ] && mkdir -p $WLBROKER_DIR
+
+/usr/local/bin/dicom_worklist generate prisma prismafit skyra -c /opt/config/config.yml -d $today -p $WLBROKER_DIR
