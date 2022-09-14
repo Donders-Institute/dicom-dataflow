@@ -19,35 +19,32 @@ They are orchestrated by the docker-compose file `docker/docker-compose-dicomdf.
 
 ## configuration
 
+Prepare environment variables by copying the [`env.example`](env.example) file to `.env`; and modify the values accordingly. 
+
 The files to be configured properly are:
 
-- `docker/docker-compose-dicomdf.yml`
+- `docker/cal2wl/config.yml`
 
-  In the `docker/docker-compose-dicomdf.yml` file, adjust the data directory shared between containers and docker host. By default, data directories are organised under `/scratch/data_dicom/orthanc` and `/scratch/data_dicom/wlbroker` on the docker host.
-
-  In the `docker/docker-compose-dicomdf.yml` file, you should also change the github username and password in order to checkout [the `hpc-utility` repository](https://github.com/Donders-Institute/hpc-utility) from GitHub.
-
-- `docker/cal2wl/config.ini`
-
-  In the file `docker/cal2wl/config.ini`, change the database settings accordingly in order to access the lab-booking events in the DCCN calendar system based on MySQL database.
+  In the file `docker/cal2wl/config.yml`, change the connections accordingly in order to access the lab-booking events in the DCCN project database.
 
 - `docker/cal2wl/cron/crontab`
 
   In the file `docker/cal2wl/cron/crontab`, you may adjust how often the lab-booking events in calender are converted into DICOM worklist.
 
-## start the containers 
+## build the containers
 
-Build docker containers using the following command:
+The service `cal2wl` makes use of the [`dicom_worklist`](https://github.com/Donders-Institute/tg-toolset-golang/tree/master/dataflow/cmd/dicom_worklist) program from the [tg-toolset-golang](https://github.com/Donders-Institute/tg-toolset-golang).  Make sure a correct [tag of the tg-toolset-golang](https://github.com/Donders-Institute/tg-toolset-golang/tags) is specified during the build.
 
 ```bash
-$ cd docker
-$ docker-compose -f docker-compose-dicomdf build --force-rm
+$ docker-compose build --build-arg TG_TOOLSET_TAG={tag} --force-rm
 ```
+
+## run the containers
 
 Start up docker containers using the following command:
 
 ```bash
-$ docker-compose -f docker-compose-dicomdf up -d
+$ docker-compose -f docker-compose up -d
 ```
 
 If the services are started successfuly, the host should export three TCP ports.  They are `8042` for Orthanc web front-end, `4042` for Orthanc's DICOM interface, and `1234` for DICOM worklist service.
