@@ -1,12 +1,13 @@
+ARG base_image=dccn/dicomdf-base:latest
 # stage 1: build tg-toolset-golang for the binary dicom_worklist
 FROM golang:1.16 as gobuild
-ARG TG_TOOLSET_TAG=1.9.0
-RUN curl -LO https://github.com/Donders-Institute/tg-toolset-golang/archive/refs/tags/${TG_TOOLSET_TAG}.tar.gz && \
-    tar xvzf ${TG_TOOLSET_TAG}.tar.gz && cd tg-toolset-golang-${TG_TOOLSET_TAG} && GOPATH=/tmp/go make
+ARG tg_toolset_tag=latest
+RUN echo ${tg_toolset_tag} && curl -LO https://github.com/Donders-Institute/tg-toolset-golang/archive/refs/tags/${tg_toolset_tag}.tar.gz && \
+    tar xvzf ${tg_toolset_tag}.tar.gz && cd tg-toolset-golang-${tg_toolset_tag} && GOPATH=/tmp/go make
 RUN ls /tmp/go/bin
 
 # stage 2: build cal2wl container
-FROM ${DOCKER_REGISTRY:-dccn}/dicomdf-base:${DOCKER_IMAGE_TAG:-latest}
+FROM $base_image
 
 # application metadata
 MAINTAINER Donders Institute

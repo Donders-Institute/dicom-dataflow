@@ -1,4 +1,5 @@
-FROM ${DOCKER_REGISTRY:-dccn}/dicomdf-base:${DOCKER_IMAGE_TAG:-latest}
+ARG base_image=dccn/dicomdf-base:latest
+FROM $base_image
 
 # install wlbroker starter script
 ENV WLBROKER_DATADIR=/data/wlbroker

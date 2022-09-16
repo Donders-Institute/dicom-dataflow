@@ -1,4 +1,5 @@
-FROM jodogne/orthanc:1.4.2
+ARG orthanc_version
+FROM jodogne/orthanc:${orthanc_version:-latest}
 
 # installing lua 5.1 and socket module
 #WORKDIR /tmp
