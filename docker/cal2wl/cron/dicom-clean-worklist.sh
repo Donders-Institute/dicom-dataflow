@@ -7,4 +7,4 @@ for f in $( find $WLBROKER_DIR -type f -not -name "*_${today}*" | grep -v lockfi
 done
 
 # clean up *.dump files older than 14 days
-find /mnt/docker/data/wlbroker/WLBROKER -name '*.dump' -mtime +14 -exec rm {} \;
+find $WLBROKER_DIR -name '*.dump' -mtime +14 -exec rm {} \;
