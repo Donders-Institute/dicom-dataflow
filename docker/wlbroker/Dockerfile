@@ -3,11 +3,11 @@ FROM $base_image
 
 # install wlbroker starter script
 ENV WLBROKER_DATADIR=/data/wlbroker
-COPY wlbroker.sh wlbroker.sh
-RUN (chmod +x wlbroker.sh)
+COPY entrypoint.sh entrypoint.sh
+RUN (chmod +x entrypoint.sh)
 
 # worklist data store and service port
-VOLUME [ "/data/wlbroker" ]
+VOLUME ["/data/wlbroker"]
 EXPOSE 1234
 
-CMD [ "./wlbroker.sh" ]
+ENTRYPOINT ["./entrypoint.sh"]

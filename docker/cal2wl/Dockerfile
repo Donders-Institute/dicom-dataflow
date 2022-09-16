@@ -16,7 +16,7 @@ LABEL donders.ru.nl.app_maintainer "h.lee@donders.ru.nl"
 LABEL donders.ru.nl.app_code_repository "https://github.com/Donders-Institute/dicom-dataflow"
 
 # install system cron
-RUN ( yum -y install cronie crontabs )
+RUN ( yum -y install cronie && yum clean all && rm -rf /var/cache/yum/*)
 
 # additional environment variables
 ENV WLBROKER_DIR=/data/wlbroker/WLBROKER
@@ -29,15 +29,10 @@ COPY cron/crontab /cron/crontab
 COPY cron/*.sh /cron/
 RUN chmod +x /cron/*.sh
 
-# add crontab to the user
-RUN crontab /cron/crontab
-
-# prepare system env for cron runtime
-RUN ( echo "export DCMTK_PREFIX=$DCMTK_PREFIX" > /cron/env.sh )
-RUN ( echo "export WLBROKER_DIR=$WLBROKER_DIR" >> /cron/env.sh )
-
 # shared volumes
 VOLUME [ "/data/wlbroker", "/data/log", "/opt/config" ]
 
-# start the cron
-CMD /usr/sbin/crond -m off -n -p
+# entrypoint
+COPY entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]

@@ -1,9 +1,7 @@
 FROM centos:7
 
 # install required packages
-RUN ( yum -y install wget gcc gcc-c++ \
-                     make cmake autoconf git zlib zlib-devel \
-                     openssl openssl-devel openssl-libs && yum clean all && rm -rf /var/cache/yum/*)
+RUN ( yum -y install gcc gcc-c++ make cmake && yum clean all && rm -rf /var/cache/yum/*)
 
 # create temporary directory
 RUN ( mkdir -p /tmp )
@@ -20,4 +18,4 @@ RUN ( cd /tmp && curl -LO https://github.com/DCMTK/dcmtk/archive/refs/tags/DCMTK
 RUN rm -rf /tmp/*DCMTK*
 
 # run a trivial command
-CMD ["/bin/echo", "hello"]
+ENTRYPOINT ["/bin/echo", "hello"]
