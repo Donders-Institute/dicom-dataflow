@@ -41,13 +41,24 @@ For building the containers, you will make use of the following variables:
 - `DOCKER_IMAGE_TAG`: the docker image tag.
 - `ORTHANC_VERSION`: the Orthanc version based on which the `orthac` container image.
 - `ORTHANC_BUILD`: the build number of the `orthanc` container image.
-- `TG_TOOLSET_TAG`: the [tag of the tg-toolset-golang](https://github.com/Donders-Institute/tg-toolset-golang/tags) from which the [`dicom_worklist`](https://github.com/Donders-Institute/tg-toolset-golang/tree/master/dataflow/cmd/dicom_worklist) program is built and included in the `calw2l` container.
+- `TG_TOOLSET_TAG`: the [tag of the tg-toolset-golang](https://github.com/Donders-Institute/tg-toolset-golang/tags) from which the [`dicom_worklist`](https://github.com/Donders-Institute/tg-toolset-golang/tree/master/dataflow/cmd/dicom_worklist) program is built and included in the `cal2wl` container.
 
 ```bash
 $ docker-compose build --force-rm
 ```
 
 ## run the containers
+
+For running the containers, you will make use of the following variables in the `.env` file:
+
+- `DOCKER_REGISTRY` and `DOCKER_IMAGE_TAG`: these two variables together determine the image to be used for the `cal2wl` and `wlbroker` containers.
+- `ORTHANC_VERSION` and `ORTHANC_BUILD`: these two variables together determine the image to be used for the `orthanc` container.
+- `VOL_ORTHANC_CONFIG`: path or name of the Orthanc configuration volume. It is bind-mounted to `/var/lib/orthanc/etc` in the Orthanc container.
+- `VOL_ORTHANC_LOG`: path or name of the Orthanc log volume. It is bind-mounted to `/var/lib/orthanc/log` in the Orthanc container.
+- `VOL_ORTHANC_DB`: path or name of the Orthanc data volume.  It is bind-mounted to `/var/lib/orthanc/db` in the Orthanc container.
+- `VOL_ORTHANC_IDX`: path or name of the Orthanc data index volume. It is bind-mounted to `/var/lib/orthanc/idx` in the Orthanc container.
+- `VOL_WLBROKER`: path or name of the workload list storage volume.  It is bind-mounted to `/data/wlbroker` in the `cal2wl` and `wlbroker` containers.
+- `VOL_CAL2WL_CONFIG`: path or name of the `cal2wl` configuration volume. It is bind-mounted to `/opt/config` in the `cal2wl` container.
 
 Start up docker containers using the following command:
 
