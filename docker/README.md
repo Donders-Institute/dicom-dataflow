@@ -33,10 +33,18 @@ The files to be configured properly are:
 
 ## build the containers
 
-The service `cal2wl` makes use of the [`dicom_worklist`](https://github.com/Donders-Institute/tg-toolset-golang/tree/master/dataflow/cmd/dicom_worklist) program from the [tg-toolset-golang](https://github.com/Donders-Institute/tg-toolset-golang).  Make sure a correct [tag of the tg-toolset-golang](https://github.com/Donders-Institute/tg-toolset-golang/tags) is specified during the build.
+Copy the [env.example](env.example) to `.env` and modify the environment variables in `.env` accordingly.
+
+For building the containers, you will make use of the following variables:
+
+- `DOCKER_REGISTRY`: the docker registry endpoint used to form the prefix of the image name.
+- `DOCKER_IMAGE_TAG`: the docker image tag.
+- `ORTHANC_VERSION`: the Orthanc version based on which the `orthac` container image.
+- `ORTHANC_BUILD`: the build number of the `orthanc` container image.
+- `TG_TOOLSET_TAG`: the [tag of the tg-toolset-golang](https://github.com/Donders-Institute/tg-toolset-golang/tags) from which the [`dicom_worklist`](https://github.com/Donders-Institute/tg-toolset-golang/tree/master/dataflow/cmd/dicom_worklist) program is built and included in the `calw2l` container.
 
 ```bash
-$ docker-compose build --build-arg TG_TOOLSET_TAG={tag} --force-rm
+$ docker-compose build --force-rm
 ```
 
 ## run the containers
