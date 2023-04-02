@@ -46,7 +46,7 @@ services:
       context: ./cal2wl
       args:
         base_image: dccn/dicomdf-base:latest
-        tg_toolset_tag: ${TG_TOOLSET_TAG:-v1.14.0}
+        tg_toolset_tag: ${TG_TOOLSET_TAG:-v1.15.0}
     image: ${DOCKER_REGISTRY:-dccn}/dicomdf-cal2wl:${DOCKER_IMAGE_TAG:-latest}
     depends_on:
       - base
