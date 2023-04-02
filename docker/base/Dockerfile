@@ -1,7 +1,7 @@
 FROM centos:7
 
 # install required packages
-RUN ( yum -y install gcc gcc-c++ make cmake && yum clean all && rm -rf /var/cache/yum/*)
+RUN (ulimit -n 1024 && yum -y install gcc gcc-c++ make cmake && yum clean all && rm -rf /var/cache/yum/*)
 
 # create temporary directory
 RUN ( mkdir -p /tmp )

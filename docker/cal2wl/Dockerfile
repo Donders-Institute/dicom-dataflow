@@ -1,9 +1,9 @@
 ARG base_image=dccn/dicomdf-base:latest
 # stage 1: build tg-toolset-golang for the binary dicom_worklist
-FROM golang:1.16 as gobuild
+FROM golang:1.20 as gobuild
 ARG tg_toolset_tag=latest
 RUN echo ${tg_toolset_tag} && curl -LO https://github.com/Donders-Institute/tg-toolset-golang/archive/refs/tags/${tg_toolset_tag}.tar.gz && \
-    tar xvzf ${tg_toolset_tag}.tar.gz && cd tg-toolset-golang-${tg_toolset_tag} && GOPATH=/tmp/go make
+    tar xvzf ${tg_toolset_tag}.tar.gz && cd tg-toolset-golang-${tg_toolset_tag#'v'} && GOPATH=/tmp/go make
 RUN ls /tmp/go/bin
 
 # stage 2: build cal2wl container
@@ -16,7 +16,7 @@ LABEL donders.ru.nl.app_maintainer "h.lee@donders.ru.nl"
 LABEL donders.ru.nl.app_code_repository "https://github.com/Donders-Institute/dicom-dataflow"
 
 # install system cron
-RUN ( yum -y install cronie && yum clean all && rm -rf /var/cache/yum/*)
+RUN (ulimit -n 1024 && yum -y install cronie && yum clean all && rm -rf /var/cache/yum/*)
 
 # additional environment variables
 ENV WLBROKER_DIR=/data/wlbroker/WLBROKER

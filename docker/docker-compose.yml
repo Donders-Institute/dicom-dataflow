@@ -4,7 +4,7 @@ services:
   base:
     build:
       context: ./base
-    image: ${DOCKER_REGISTRY:-dccn}/dicomdf-base:${DOCKER_IMAGE_TAG:-latest}
+    image: dccn/dicomdf-base:latest
     networks:
       - nw-dicom-dataflow
   orthanc:
@@ -30,7 +30,7 @@ services:
     build: 
       context: ./wlbroker
       args:
-        base_image: ${DOCKER_REGISTRY:-dccn}/dicomdf-base:${DOCKER_IMAGE_TAG:-latest}
+        base_image: dccn/dicomdf-base:latest
     image: ${DOCKER_REGISTRY:-dccn}/dicomdf-wlbroker:${DOCKER_IMAGE_TAG:-latest}
     depends_on:
       - base
@@ -45,8 +45,8 @@ services:
     build:
       context: ./cal2wl
       args:
-        base_image: ${DOCKER_REGISTRY:-dccn}/dicomdf-base:${DOCKER_IMAGE_TAG:-latest}
-        tg_toolset_tag: ${TG_TOOLSET_TAG:-1.9.0}
+        base_image: dccn/dicomdf-base:latest
+        tg_toolset_tag: ${TG_TOOLSET_TAG:-v1.14.0}
     image: ${DOCKER_REGISTRY:-dccn}/dicomdf-cal2wl:${DOCKER_IMAGE_TAG:-latest}
     depends_on:
       - base
