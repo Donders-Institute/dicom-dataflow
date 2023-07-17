@@ -2,19 +2,17 @@
 
 _NOTE: this package has strong dependency on the DCCN research facility, such as the project-based storage and properly configured MRI scanners._
 
-A schematic illustration of the dataflow is shown in the figure below:
+A schematic illustration of the automatic DCCN dataflow is shown in the figure below:
 
 ![](dicom_dataflow_docker_containers.png)
 
-This package consists of the services indiciated by the blue blocks:
+The dataflow involves four services, three of which (indicated by the blue blocks) are packaged and described in this repository:
 
-- __CAL2WL__: a (cron-like) service running periodically to convert the lab-booking events into DICOM worklist.
-- __WLBROKER__: a light-weight DICOM worklist broker using the `wlmscpfs` program of the [DCMTK toolkits](http://dicom.offis.de) to serve worklist to the MR scanners.
-- __ORTHANC__: a DICOM PACS server implementation. The website of [Orthanc](http://www.orthanc-server.com/).
+- __CAL2WL__: A (cron-like) in-house developed service running periodically to convert the lab-booking events (containing the date-time slot, the project number and the subject/session labels) into standard [DICOM worklists](https://pacsbootcamp.com/dicom-modality-worklist/). See: `./dscker/cal2wl/`
+- __WLBROKER__: A light-weight DICOM worklist broker using the `wlmscpfs` program of the freely available [DCMTK toolkit](http://dicom.offis.de) to push the worklists to the scanners.
+- __ORTHANC__: A freely available DICOM PACS server that can receive DICOM data pushed from the scanners and present it on the network with a much simpler RESTful API for further routing (i.e. to the right subject/session folder on project storage). See the [Orthanc](http://www.orthanc-server.com/) website for more details.
 
-Those services are provided as [docker](http://docker.com) containers.
-
-Note: The service for streaming data from the PACS server to project storage and data archive is provided as a separate package called __Streamer__.  See [this repository](https://github.com/Donders-Institute/streamer).
+The wlbroker and the orthanc services create an industry standard DICOM workflow environment for the scanners (any number of any kind), similar to what can be found in hospitals. The service for streaming data from the Orthanc server to project storage and our data archive is provided as a separate package called [__Streamer__](https://github.com/Donders-Institute/streamer). All services are provided as [docker](http://docker.com) containers.
 
 ## Requirements 
 
@@ -23,13 +21,13 @@ Note: The service for streaming data from the PACS server to project storage and
 
 ## Getting start
 
-### 1. checkout this package from GitHub
+### 1. Checkout this package from GitHub
  
 ```bash
 $ git clone https://github.com/Donders-Institute/dicom-dataflow.git
 $ cd dicom-dataflow
 ```
 
-### 2. start docker containers
+### 2. Start docker containers
 
-Instruction of startng docker containers is documented [here](docker/README.md).
+Instruction of starting docker containers is documented [here](docker/README.md).
