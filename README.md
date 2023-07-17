@@ -1,6 +1,6 @@
 # DCCN DICOM dataflow
 
-_NOTE: this package has strong dependency on the DCCN research facility, such as the project-based storage and properly configured MRI scanners._
+_NOTE: this package has important dependencies on the DCCN research facility, such as the project-based storage and properly configured MR scanners._
 
 A schematic illustration of the automatic DCCN dataflow is shown in the figure below:
 
