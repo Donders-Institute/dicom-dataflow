@@ -21,7 +21,7 @@ while [ -h "$SOURCE" ]; do
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-# retrive new studies
+# retrieve new studies
 ts_offset=$1
 ts_from=$(( ts_now - 3600 * ts_offset ))
 
