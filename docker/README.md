@@ -29,7 +29,7 @@ The files to be configured properly are:
 
 - `docker/cal2wl/cron/crontab`
 
-  In the file `docker/cal2wl/cron/crontab`, you may adjust how often the lab-booking events in calender are converted into DICOM worklist.
+  In the file `docker/cal2wl/cron/crontab`, you may adjust how often the lab-booking events in calendar are converted into DICOM worklist.
 
 ## build the containers
 
@@ -66,4 +66,4 @@ Start up docker containers using the following command:
 $ docker-compose -f docker-compose up -d
 ```
 
-If the services are started successfuly, the host should export three TCP ports.  They are `8042` for Orthanc web front-end, `4042` for Orthanc's DICOM interface, and `1234` for DICOM worklist service.
+If the services are started successfully, the host should export three TCP ports.  They are `8042` for Orthanc web front-end, `4042` for Orthanc's DICOM interface, and `1234` for DICOM worklist service.

@@ -3,7 +3,7 @@
 - participants: Rene, Hong, Marcel, Robert
 
 - Subject and session will be specified at the time of lab booking.
-    - an extra field for specifying subject and session is needed on the lab-booking form, and the input wll be part of the attributes of the booking.
+    - an extra field for specifying subject and session is needed on the lab-booking form, and the input will be part of the attributes of the booking.
     - Subjects and sessions have been used in the past for lab booking (excluding the ones being cancelled) are forbidden for new booking. 
 
 - Tentative mapping between subject/session to DICOM worklist attributes.  A minimum worklist DICOM dump is
