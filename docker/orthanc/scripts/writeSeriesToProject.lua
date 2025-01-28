@@ -2,7 +2,7 @@ function submitStreamerJob(seriesId)
     -- submit a stager job to upload series data to RDM 
     local url = os.getenv('STREAMER_URL') .. '/mri/series/' .. seriesId
 
-    SetHttpCredentials('admin', 'admin')
+    SetHttpCredentials(os.getenv('STREAMER_USERNAME'), os.getenv('STREAMER_PASSWORD'))
 
     local answer = HttpPost(url, nil)
     if answer == nil or answer == '' then

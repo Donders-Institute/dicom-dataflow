@@ -25,7 +25,9 @@ services:
       - ${VOL_ORTHANC_DB:-vol-orthanc-db}:/var/lib/orthanc/db
       - ${VOL_ORTHANC_IDX:-vol-orthanc-idx}:/var/lib/orthanc/idx
     environment:
-      - STREAMER_URL=http://streamer:3001
+      - STREAMER_URL=${STREAMER_URL:-http://streamer:3001}
+      - STREAMER_USERNAME=${STREAMER_USERNAME}
+      - STREAMER_PASSWORD=${STREAMER_PASSWORD}
   wlbroker:
     build: 
       context: ./wlbroker
