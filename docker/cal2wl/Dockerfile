@@ -1,6 +1,6 @@
 ARG base_image=dccn/dicomdf-base:latest
 # stage 1: build tg-toolset-golang for the binary dicom_worklist
-FROM golang:1.20 as gobuild
+FROM golang:1.25-bookworm as gobuild
 ARG tg_toolset_tag=latest
 RUN echo ${tg_toolset_tag} && curl -LO https://github.com/Donders-Institute/tg-toolset-golang/archive/refs/tags/${tg_toolset_tag}.tar.gz && \
     tar xvzf ${tg_toolset_tag}.tar.gz && cd tg-toolset-golang-${tg_toolset_tag#'v'} && GOPATH=/tmp/go make
