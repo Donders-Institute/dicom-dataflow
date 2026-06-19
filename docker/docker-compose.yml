@@ -1,18 +1,11 @@
 version: "2.2"
 
 services:
-  base:
-    build:
-      context: ./base
-    image: dccn/dicomdf-base:latest
-    networks:
-      - nw-dicom-dataflow
   orthanc:
     build:
-      context: ./orthanc
-      args:
-        orthanc_version: ${ORTHANC_VERSION:-1.4.2}
-    image: ${DOCKER_REGISTRY:-dccn}/dicomdf-orthanc:${ORTHANC_VERSION:-latest}-${ORTHANC_BUILD:-1}
+      context: .
+      target: orthanc
+    image: ${DOCKER_REGISTRY:-dccn}/dicomdf-orthanc:${ORTHANC_VERSION:-latest}-${DOCKER_IMAGE_TAG:-latest}
     networks:
       - nw-dicom-dataflow
     hostname: orthanc
@@ -29,13 +22,10 @@ services:
       - STREAMER_USERNAME=${STREAMER_USERNAME}
       - STREAMER_PASSWORD=${STREAMER_PASSWORD}
   wlbroker:
-    build: 
-      context: ./wlbroker
-      args:
-        base_image: dccn/dicomdf-base:latest
+    build:
+      context: .
+      target: wlbroker
     image: ${DOCKER_REGISTRY:-dccn}/dicomdf-wlbroker:${DOCKER_IMAGE_TAG:-latest}
-    depends_on:
-      - base
     networks:
       - nw-dicom-dataflow
     hostname: wlbroker
@@ -45,13 +35,9 @@ services:
       - ${VOL_WLBROKER:-vol-wlbroker}:/data/wlbroker
   cal2wl:
     build:
-      context: ./cal2wl
-      args:
-        base_image: dccn/dicomdf-base:latest
-        tg_toolset_tag: ${TG_TOOLSET_TAG:-v1.15.0}
+      context: .
+      target: cal2wl
     image: ${DOCKER_REGISTRY:-dccn}/dicomdf-cal2wl:${DOCKER_IMAGE_TAG:-latest}
-    depends_on:
-      - base
     networks:
       - nw-dicom-dataflow
     hostname: cal2wl
