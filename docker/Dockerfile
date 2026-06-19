@@ -1,18 +1,24 @@
-##-- stage: base image
-FROM almalinux:9 as base
+##-- stage: build DCMTK only once
+FROM almalinux:9 AS dcmtk-build
 
-RUN (ulimit -n 1024 && yum -y install gcc gcc-c++ make cmake && yum clean all && rm -rf /var/cache/yum/*)
-RUN ( mkdir -p /tmp )
-
-# build dcmtk
 ARG dcmtk_prefix=/opt/dcmtk/latest
 ENV DCMTK_PREFIX=$dcmtk_prefix
-RUN ( cd /tmp && curl -LO https://github.com/DCMTK/dcmtk/archive/refs/tags/DCMTK-3.6.4.tar.gz && \
-      tar xvzf DCMTK-3.6.4.tar.gz && cd dcmtk-DCMTK-3.6.4 && \
-      mkdir dcmtk_build; cd dcmtk_build && \
-      cmake -DCMAKE_INSTALL_PREFIX=$DCMTK_PREFIX ../ && \
-      make -j8 && make install && make clean && cd )
-RUN rm -rf /tmp/*DCMTK*
+
+RUN dnf -y install gcc gcc-c++ make cmake curl-minimal tar gzip \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf/*
+
+RUN mkdir -p /tmp \
+    && cd /tmp \
+    && curl -LO https://github.com/DCMTK/dcmtk/archive/refs/tags/DCMTK-3.6.4.tar.gz \
+    && tar xzf DCMTK-3.6.4.tar.gz \
+    && cd dcmtk-DCMTK-3.6.4 \
+    && mkdir dcmtk_build \
+    && cd dcmtk_build \
+    && cmake -DCMAKE_INSTALL_PREFIX="$DCMTK_PREFIX" -DCMAKE_BUILD_TYPE=Release ../ \
+    && make -j"$(nproc)" \
+    && make install/strip \
+    && rm -rf /tmp/*
 
 ##-- stage: build tg-toolset-golang
 FROM golang:1.25-bookworm as gobuild
@@ -21,15 +27,30 @@ RUN echo ${tg_toolset_tag} && curl -LO https://github.com/Donders-Institute/tg-t
     tar xvzf ${tg_toolset_tag}.tar.gz && cd tg-toolset-golang-${tg_toolset_tag#'v'} && GOPATH=/tmp/go make
 RUN ls /tmp/go/bin
 
+##-- stage: slim runtime base with dcmtk runtime files only
+FROM almalinux:9-minimal AS runtime-base
+
+ARG dcmtk_prefix=/opt/dcmtk/latest
+ENV DCMTK_PREFIX=$dcmtk_prefix
+ENV PATH=${DCMTK_PREFIX}/bin:${PATH}
+ENV LD_LIBRARY_PATH=${DCMTK_PREFIX}/lib64:${LD_LIBRARY_PATH}
+ENV DCMDICTPATH=${DCMTK_PREFIX}/share/dcmtk/dicom.dic
+
+RUN microdnf -y install libstdc++ libgcc \
+    && microdnf clean all
+
+COPY --from=dcmtk-build ${dcmtk_prefix} ${dcmtk_prefix}
+
 ##-- stage: build cal2wl container
-FROM base AS cal2wl
+FROM runtime-base AS cal2wl
 
 MAINTAINER Donders Institute
 LABEL donders.ru.nl.app_name "dicomdf-cal2wl"
 LABEL donders.ru.nl.app_maintainer "h.lee@donders.ru.nl"
 LABEL donders.ru.nl.app_code_repository "https://github.com/Donders-Institute/dicom-dataflow"
 
-RUN (ulimit -n 1024 && yum -y install cronie && yum clean all && rm -rf /var/cache/yum/*)
+RUN microdnf -y install cronie \
+    && microdnf clean all
 
 ENV WLBROKER_DIR=/data/wlbroker/WLBROKER
 
@@ -46,7 +67,7 @@ RUN chmod +x entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
 
 ##-- stage: build wlbroker
-FROM base AS wlbroker
+FROM runtime-base AS wlbroker
 
 ENV WLBROKER_DATADIR=/data/wlbroker
 COPY wlbroker/entrypoint.sh entrypoint.sh
