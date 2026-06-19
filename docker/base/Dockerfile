@@ -1,4 +1,4 @@
-FROM almalinux:8
+FROM almalinux:9
 
 # install required packages
 RUN (ulimit -n 1024 && yum -y install gcc gcc-c++ make cmake && yum clean all && rm -rf /var/cache/yum/*)
