@@ -30,9 +30,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract ORTHANC_VERSION from Dockerfile
+        run: |
+          set -eu
+          orthanc_version="$(sed -nE 's|^FROM[[:space:]]+jodogne/orthanc:([^[:space:]]+)[[:space:]]+AS[[:space:]]+orthanc$|\1|p' docker/Dockerfile | head -n 1)"
+          if [ -z "$orthanc_version" ]; then
+            echo "Failed to parse ORTHANC_VERSION from docker/Dockerfile" >&2
+            exit 1
+          fi
+          echo "ORTHANC_VERSION=$orthanc_version" >> "$GITHUB_ENV"
+
       - name: Build and push application images
         working-directory: docker
         env:
+          ORTHANC_VERSION: ${{ env.ORTHANC_VERSION }}
           DOCKER_IMAGE_TAG: ${{ github.event.release.tag_name || 'latest' }}
         run: |
           docker compose build orthanc wlbroker cal2wl
