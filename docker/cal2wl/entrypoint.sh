@@ -4,6 +4,8 @@
 echo "DCMTK_PREFIX=$DCMTK_PREFIX" > /etc/environment
 echo "WLBROKER_DIR=$WLBROKER_DIR" >> /etc/environment
 
+mkdir -p /var/spool/cron
+
 ## replace with customized crontab
 if [ -f /cron/crontab ]; then
     cat /cron/crontab > /var/spool/cron/root

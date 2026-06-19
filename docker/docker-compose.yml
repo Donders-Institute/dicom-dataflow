@@ -5,7 +5,7 @@ services:
     build:
       context: .
       target: orthanc
-    image: ${DOCKER_REGISTRY:-dccn}/dicomdf-orthanc:${ORTHANC_VERSION:-latest}-${DOCKER_IMAGE_TAG:-latest}
+    image: ${DOCKER_REGISTRY:-dccn}/dicomdf-orthanc:${ORTHANC_VERSION:-latest}
     networks:
       - nw-dicom-dataflow
     hostname: orthanc
